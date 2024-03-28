@@ -44,6 +44,6 @@
 
 @media (display-mode: browser) {
     .install-container {
-        display: block;
+        display: none;
     }
 }

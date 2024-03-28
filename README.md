@@ -7,5 +7,3 @@
 
 ## This project auto deploy
 Action pipeline is autorun when push to `master` branch.
-
-

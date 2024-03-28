@@ -23,6 +23,7 @@ import {
 import { ReactSession } from 'react-client-session';
 import { ConfirmPage } from 'components/pages/confirm';
 import { PersonalInformationForm } from 'components/pages/personal-information-form';
+import { ViewPage } from 'components/pages/view';
 function App() {
   ReactSession.setStoreType("localStorage");
 
@@ -32,6 +33,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route path="/" element={<LoadPage />} />
         <Route path="/otp" element={<OtpPage />} />
+        <Route path="/view" element={<ViewPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/confirm" element={<ConfirmPage />} />

@@ -6,7 +6,6 @@ import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
-
 import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
@@ -20,7 +19,6 @@ import {
     Link,
     useParams
 } from "react-router-dom";
-import dayjs from 'dayjs';
 import axios from 'axios';
 import { apiUrl } from '../../configs/app';
 import { ReactSession } from 'react-client-session';
@@ -29,10 +27,9 @@ import Loading from '../parts/loading';
 export function AppointmentPage() {
     const [specialistId] = useState(useParams().expertID);
     const navigate = useNavigate();
-
     const [user, setUser] = useState(ReactSession.get('user'));
-    const [bookingTime, setBookingTime] = React.useState(dayjs());
-    const [bookingDate, setBookingDate] = React.useState(dayjs());
+    const [bookingTime, setBookingTime] = React.useState();
+    const [bookingDate, setBookingDate] = React.useState();
     const [isDrawerOpen, setDrawerOpen] = useState(false);
     const [isBookable, setIsBookable] = useState(1);
     const [loading, setLoading] = React.useState(true);
@@ -50,7 +47,13 @@ export function AppointmentPage() {
     });
 
     useEffect(() => {
+
+        if(!user.birthday || user.birthday === '') {
+            navigate('/form', { state: { sid: specialistId } });
+        }
+        
         getSpecialist();
+
     }, [specialistId]);
     // get api of specialist by id
     const getSpecialist = async () => {
@@ -70,7 +73,7 @@ export function AppointmentPage() {
                 "topics_json": res.data.data.topics_json,
                 "is_active": (!Number(res.data.data.is_active)) ? 1 : 0
             }
-            console.log(newdata)
+            
             setIsBookable(newdata.is_active);
             setSpecialist(newdata);
             setLoading(false);

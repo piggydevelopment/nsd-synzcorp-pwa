@@ -8,15 +8,20 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
-import { Link } from "react-router-dom";
 import Button from '@mui/material/Button';
 import '@splidejs/react-splide/css';
 import '../../assets/css/base.css';
-
-
+import { ReactSession } from 'react-client-session';
+import {
+    BrowserRouter as Router,
+    useNavigate,
+    Link
+} from "react-router-dom";
 export const Specialist = (props) => {
     const [type, setType] = useState(props.type);
     const [data, setData] = useState(props.data);
+    const [user, setUser] = useState(ReactSession.get('user'));
+    const navigate = useNavigate();
 
     return (
         <Box sx={{ p: 3 }}>
@@ -38,7 +43,9 @@ export const Specialist = (props) => {
                         <SplideSlide key={item.id}>
                             <Card sx={{ border: 0, boxShadow: 'unset' }}>
                                 <CardActionArea>
-                                    <Link to={"/appointment/" + item.id}>
+                                    <Link 
+                                    to={`/appointment/${item.id}`}
+                                    >
                                         <CardMedia
                                             component="img"
                                             className='experimgcard'
@@ -62,9 +69,10 @@ export const Specialist = (props) => {
                                         </div>
                                         <Button
                                             variant="contained"
-                                            component={Link} to={"/appointment/"+item.id}
+                                            component={Link}
                                             fullWidth
                                             className='NotoSansThai'
+                                            to={`/appointment/${item.id}`}
                                             sx={{
                                                 borderRadius: 30,
                                                 backgroundColor: '#461E99',

@@ -29,9 +29,6 @@ export function AccountPage() {
     const [open, setOpen] = React.useState(false);
     const [snackbar, setSnackBar] = React.useState(false);
 
-    // useEffect(() => {
-    //     window.$chatwoot.reset();
-    // })
 
     const handleSubmit = async e => {
         // validate all input is not empty
@@ -130,7 +127,7 @@ export function AccountPage() {
                         type="tel"
                         InputLabelProps={{
                             shrink: true,
-                          }}
+                        }}
                     />
                     
                     <FormControl fullWidth>
@@ -165,8 +162,8 @@ export function AccountPage() {
                         >
                             {departments.map((department, index) => (
                                 <MenuItem
-                                    key={index}
-                                    value={department}>{department}</MenuItem>
+                                key={index}
+                                value={department}>{department}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>
@@ -183,7 +180,23 @@ export function AccountPage() {
                             fontSize: '16px',
                         }}
                     >บันทึกข้อมูล</Button>
-
+                    <Button
+                        variant="contained"
+                        type="button"
+                        onClick={() => {
+                            navigate('/form');
+                        }}
+                        fullWidth
+                        className='NotoSansThai secondaryButton'
+                        sx={{
+                            borderRadius: 50,
+                            backgroundColor: '#F6F6F6',
+                            padding: '16px 32px',
+                            fontSize: '16px',
+                            color: '#656565',
+                            boxShadow: 'unset'
+                        }}
+                    >แก้ไขข้อมูลอื่นๆ</Button>
                     <Stack sx={{ mx: 3 }} spacing={3} direction={'row'}>
                         <Button
                             variant="contained"

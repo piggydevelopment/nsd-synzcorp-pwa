@@ -16,7 +16,7 @@ window.addEventListener("beforeinstallprompt", (e) => {
   // Save the event because you’ll need to trigger it later.
   deferredPrompt = e;
   // Show your customized install prompt for your PWA
-  document.querySelector("#installInstructions").style.display = "block";
+  document.querySelector("#installInstructions").style.display = "none";
   showResult("✅ Your browser is supported", true);
 });
 

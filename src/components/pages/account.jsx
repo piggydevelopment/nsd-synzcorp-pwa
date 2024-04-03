@@ -136,7 +136,6 @@ export function AccountPage() {
                             labelId="synz-select-area"
                             id="synz-select-area"
                             value={user.attribute_2}
-                            defaultValue={user.attribute_2}
                             label="สังกัด *"
                             variant='standard'
                             required={true}
@@ -157,7 +156,6 @@ export function AccountPage() {
                             label="สถานปที่ฏิบัติงาน *"
                             required={true}
                             variant='standard'
-                            defaultValue={user.attribute_1}
                             onChange={handleChangeDepartment}
                         >
                             {departments.map((department, index) => (

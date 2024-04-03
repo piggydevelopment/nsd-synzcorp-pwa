@@ -116,16 +116,15 @@ export function UpdatePage() {
                     />
 
                     <FormControl fullWidth>
-                        <InputLabel id="synz-select-label">สถานปที่ฏิบัติงาน</InputLabel>
+                        <InputLabel id="synz-select-label">สังกัด</InputLabel>
                         <Select
                             labelId="synz-select-label"
-                            id="synz-select-area"
+                            id="synz-select-department"
                             value={user.attribute_2}
-                            defaultValue={user.attribute_2}
-                            label="สถานปที่ฏิบัติงาน *"
-                            variant='standard'
+                            label="สังกัด *"
                             required={true}
-                            onChange={handleChangeArea}
+                            variant='standard'
+                            onChange={handleChangeDepartment}
                         >
                             {areas.map((area, index) => (
                                 <MenuItem key={index} value={area}>{area}</MenuItem>
@@ -134,24 +133,25 @@ export function UpdatePage() {
                     </FormControl>
 
                     <FormControl fullWidth>
-                        <InputLabel id="synz-select-label">สังกัด</InputLabel>
+                        <InputLabel id="synz-select-label">สถานปที่ฏิบัติงาน</InputLabel>
                         <Select
                             labelId="synz-select-label"
-                            id="synz-select-department"
+                            id="synz-select-area"
                             value={user.attribute_1}
-                            label="สังกัด *"
-                            required={true}
+                            label="สถานปที่ฏิบัติงาน *"
                             variant='standard'
-                            defaultValue={user.attribute_1}
-                            onChange={handleChangeDepartment}
+                            required={true}
+                            onChange={handleChangeArea}
                         >
                             {departments.map((department, index) => (
                                 <MenuItem
                                 key={index} 
                                 value={department}>{department}</MenuItem>
                             ))}
+                            
                         </Select>
                     </FormControl>
+
     
                     <Button 
                     variant="contained"  

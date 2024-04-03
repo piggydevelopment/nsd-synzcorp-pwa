@@ -11,13 +11,15 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import Chip from '@mui/material/Chip';
-import { psychiatricTreatmentOption, addicOption } from '../../configs/app';
-import CancelIcon from "@mui/icons-material/Cancel";
+import FormGroup from '@mui/material/FormGroup';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+import Checkbox from '@mui/material/Checkbox';
+import { psychiatricTreatmentOption } from '../../configs/app';
 import axios from 'axios';
-import { apiUrl, app_name } from '../../configs/app';
-import Snackbar from '@mui/material/Snackbar';
+import { apiUrl } from '../../configs/app';
 import {
     BrowserRouter as Router,
     useNavigate,
@@ -29,11 +31,13 @@ export const PersonalInformationForm = () => {
     const location = useLocation();
     const [user, setUser] = useState(ReactSession.get('user'));
     const [selectedAddictions, setSelectedAddictions] = useState([]);
+    const [gender, setGender] = useState(user.gender);
     const [formData, setFormData] = useState({
         firstname: user.firstname,
         lastname: user.lastname,
         occupation: user.occupation,
         birthday: user.birthday,
+        gender: user.gender,
         idcard_number: user.idcard_number,
         current_medicine: user.current_medicine,
         history_treatment_household: user.history_treatment_household,
@@ -46,23 +50,56 @@ export const PersonalInformationForm = () => {
         received_treatment: user.received_treatment,
         hospital_treatment: user.hospital_treatment,
         addicted_cigarettes: user.addicted_cigarettes,
-        addicted_coffee: user.addicted_coffe,
+        addicted_coffee: user.addicted_coffee,
         addicted_alcohol: user.addicted_alcohol
     });
+
+    useEffect(() => {
+        setSelectedAddictions([ 
+            user.addicted_cigarettes === true && "addicted_cigarettes",
+            user.addicted_coffee === true && "addicted_coffee", 
+            user.addicted_alcohol === true && "addicted_alcohol"
+        ]);
+    }, [user]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleAddictionChange = async (e) => {
+        try{
+            
+            let selectedAddiction = await e.target.value.filter(addic => addic);
+            await setSelectedAddictions([...selectedAddictions, selectedAddiction]);
+            console.log(selectedAddictions)
+        }
+        catch(error) {
+            alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งในภายหลัง')
+        }
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-        // TODO: บันทึกข้อมูลและทำการนัดหมายแพทย์
         
         // assign 'Y' to each member of selectedAddictions
-        const addictions = selectedAddictions.map(addiction => ({ [addiction]: true }));
-        // merge value of addictions with formData
-        await setFormData( { ...formData, ...Object.assign({}, ...addictions) } )
+        let addictions = {
+            addicted_cigarettes: false,
+            addicted_coffee: false,
+            addicted_alcohol: false
+        }
+
+        await selectedAddictions.map(addiction => {
+            if([addiction][0] == 'addicted_cigarettes'){ 
+                addictions.addicted_cigarettes = true;
+            }
+            if([addiction][0] == 'addicted_coffee'){ 
+                addictions.addicted_coffee = true;
+            }
+            if([addiction][0] == 'addicted_alcohol'){ 
+                addictions.addicted_alcohol = true;
+            }
+        });
 
         try{
             let update_data = await axios.post(`${apiUrl}/api/user/treatment-information/${user.id}`, formData)
@@ -139,12 +176,29 @@ export const PersonalInformationForm = () => {
                         name="idcard_number"
                         variant="standard"
                         className='NotoSansThai'
-                        inputProps={{ maxLength: 13, pattern: "[0-9]{13}" }}
+                        inputProps={{ minLength: 13, maxLength: 13, pattern: "[0-9]{13}" }}
                         value={formData.idcard_number}
                         onChange={handleChange}
                         type="tel"
                         required
                     />
+                    <FormControl>
+                        <FormLabel id="radio-buttons-group-label">เพศ</FormLabel>
+                        <RadioGroup
+                            row
+                            required
+                            variant="standard"
+                            className='NotoSansThai'
+                            aria-labelledby="radio-buttons-group-label"
+                            sx={{ paddingBottom: 2}}
+                            onChange={handleChange}
+                        >
+                            <FormControlLabel name="gender" value="female" control={<Radio />} 
+                            label="หญิง" sx={{margin: '10px 4px 4px 0px'}}/>
+                            <FormControlLabel name="gender" value="male" control={<Radio />} 
+                            label="ชาย" sx={{margin: '10px 4px 4px 10px'}}/>
+                        </RadioGroup>
+                    </FormControl>
 
                     {/* Section Title */}
                     <h2 className='NotoSansThai'>ประวัติการรักษา</h2>
@@ -155,7 +209,7 @@ export const PersonalInformationForm = () => {
                             id="psychiatricTreatment"
                             value={formData.received_treatment}
                             label="เคยรักษาทางจิตเวชมาก่อนหรือไม่?"
-                            required={true}
+                            required
                             variant='standard'
                             className='NotoSansThai'
                             defaultValue={formData.received_treatment}
@@ -184,6 +238,7 @@ export const PersonalInformationForm = () => {
                         label="ยาที่ใช้อยู่ ณ ปัจจุบัน"
                         name="current_medicine"
                         variant="standard"
+                        required
                         value={formData.current_medicine}
                         onChange={handleChange}
                         className='NotoSansThai'
@@ -198,6 +253,7 @@ export const PersonalInformationForm = () => {
                         onChange={handleChange}
                         className='NotoSansThai'
                         multiline
+                        required
                         minRows={2}
                     />
 
@@ -222,6 +278,7 @@ export const PersonalInformationForm = () => {
                         value={formData.history_food_allergy}
                         onChange={handleChange}
                         className='NotoSansThai'
+                        required
                         multiline
                         minRows={2}
                     />
@@ -280,63 +337,23 @@ export const PersonalInformationForm = () => {
                     
                     <FormControl fullWidth margintop={20}>
                         <InputLabel>ประวัติการเสพติด</InputLabel>
-                        <Select
-                            value={selectedAddictions}
-                            label="ประวัติการเสพติด *"
-                            multiple
-                            required={true}
-                            variant='standard'
-                            className='NotoSansThai'
-                            style={{
-                                borderBottom: "1px solid rgba(0, 0, 0, 0.43)",
-                                padding: "10px",
-                                outline: 0,
-                                borderWidth: "0 0 1px 0",
-                                borderRadius: 0
-                            }}
-                            defaultValue={selectedAddictions}
-                            onChange={(e) => setSelectedAddictions(e.target.value)}
-                            input={<OutlinedInput label="ประวัติการเสพติด *" variant='standard' className='NotoSansThai' />}
-                            renderValue={(selected) => (
-                                <Stack gap={1} direction="row" flexWrap="wrap">
-                                    {selected.map((value) => (
-                                        <Chip
-                                            key={value}
-                                            label={value}
-                                            onDelete={() =>
-                                                setSelectedAddictions(
-                                                    selectedAddictions.filter((item) => item !== value)
-                                                )
-                                            }
-                                            deleteIcon={
-                                                <CancelIcon
-                                                    onMouseDown={(event) => event.stopPropagation()}
-                                                />
-                                            }
-                                        />
-                                    ))}
-                                </Stack>
-                            )}
-                        >
-                                <MenuItem key="addicted_cigarettes" value="addicted_cigarettes"
-                                style={{fontFamily: "Noto Sans Thai",
-                                display: 'block', padding: 10}}>บุหรี่</MenuItem>
-                                <MenuItem key="addicted_coffee" value="addicted_coffee"
-                                style={{fontFamily: "Noto Sans Thai",
-                                display: 'block', padding: 10}}>กาแฟ</MenuItem>
-                                <MenuItem key="addicted_alcohol" value="addicted_alcohol"
-                                style={{fontFamily: "Noto Sans Thai",
-                                display: 'block', padding: 10}}>แอลกอฮอล์</MenuItem>
-
-                        </Select>
+                        
                     </FormControl>
+                    <FormGroup onChange={(e) => {
+                        setFormData({ ...formData, [e.target.name]: true });
+                        console.log(formData);
+                    }} name="addictions">
+                        <FormControlLabel  control={<Checkbox />} name="addicted_coffee" value="addicted_coffee" label="กาแฟ" />
+                        <FormControlLabel  control={<Checkbox />} name="addicted_alcohol" value="addicted_alcohol" label="บุหรี่" />
+                        <FormControlLabel  control={<Checkbox />} name="addicted_cigarettes" value="addicted_cigarettes" label="แอลกอฮอล์" />
+                    </FormGroup>
+                    
 
                     <Button
                         variant="contained"
-                        type="button"
+                        type="submit"
                         fullWidth
                         className='NotoSansThai'
-                        onClick={handleSubmit}
                         style={{
                             borderRadius: 50,
                             backgroundColor: '#461E99',

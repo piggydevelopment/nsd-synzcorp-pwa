@@ -19,6 +19,7 @@ import {
     Link,
     useParams
 } from "react-router-dom";
+import dayjs from 'dayjs';
 import axios from 'axios';
 import { apiUrl } from '../../configs/app';
 import { ReactSession } from 'react-client-session';
@@ -29,7 +30,7 @@ export function AppointmentPage() {
     const navigate = useNavigate();
     const [user, setUser] = useState(ReactSession.get('user'));
     const [bookingTime, setBookingTime] = React.useState();
-    const [bookingDate, setBookingDate] = React.useState();
+    const [bookingDate, setBookingDate] = React.useState(dayjs());
     const [isDrawerOpen, setDrawerOpen] = useState(false);
     const [isBookable, setIsBookable] = useState(1);
     const [loading, setLoading] = React.useState(true);
@@ -191,7 +192,7 @@ export function AppointmentPage() {
                     <ul>
                         {
                             specialist.schedule_appointments.split('\n').map((item, i) => (
-                                <div key={i}>{item.replace('-', '')}</div>
+                                <li key={i}>{item.replace('-', '')}</li>
                             ))
                         }
                     </ul>

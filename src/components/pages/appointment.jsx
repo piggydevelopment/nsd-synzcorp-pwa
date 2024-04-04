@@ -21,7 +21,7 @@ import {
 } from "react-router-dom";
 import dayjs from 'dayjs';
 import axios from 'axios';
-import { apiUrl } from '../../configs/app';
+import { apiUrl, orgId } from '../../configs/app';
 import { ReactSession } from 'react-client-session';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../parts/loading';
@@ -89,7 +89,7 @@ export function AppointmentPage() {
         e.preventDefault();
         if(!specialistId) return;
         const submit_data = {
-            organization_id: 1,
+            organization_id: orgId,
             user_id: user.id,
             specialist_id: specialistId,
             appointment_date: bookingDate.format('YYYY-MM-DD'),

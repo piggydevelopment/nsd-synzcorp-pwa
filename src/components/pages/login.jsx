@@ -36,7 +36,8 @@ export function LoginPage() {
      * @return {boolean} true if the email value is valid, false otherwise
      */
     const validate = (email_value) => {
-      const pattern = /^(1|2|3|4|5)[0-9]{5}@egat.co.th$/
+      // create email verify regular expression
+      const pattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
       if (pattern.test(email_value)) {
         setError(false);
         return true
@@ -99,9 +100,7 @@ export function LoginPage() {
               <div style={{fontSize: '12px', textAlign: 'left'}}>
                 <Alert severity="warning">
                 <b>อีเมลไม่ถูกต้อง เงื่อนไขในการใช้บริการ</b><br/>
-                - ต้องใช้ Email @egat.co.th เท่านั้น<br/>
-                - ต้องใช้รหัสผู้ใช้งานเป็นตัวเลข 6 หลักเท่านั้น ห้ามมีตัวอักษรในรหัสผู้ใช้งาน เช่น 1XXXXX@egat.co.th<br/>
-                - รหัสผู้ใช้งานต้องขึ้นต้นด้วยตัวเลข 1-5 เท่านั้น เช่น 1XXXXX@egat.co.th, 2XXXXX@egat.co.th
+                ต้องใช้ Email ที่ออกโดยองค์กรที่ทำงานอยู่เท่านั้น<br/>
                 </Alert>
               </div>
               :null

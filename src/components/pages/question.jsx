@@ -1,12 +1,11 @@
 
-import React, { useState, useEffect,Component } from 'react';
+import React from 'react';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
 import TextField from '@mui/material/TextField';
 import Rating from '@mui/material/Rating';
@@ -15,13 +14,9 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import {
-    BrowserRouter as Router,
-    Link,
-    useLocation 
-  } from "react-router-dom";
-import { ReactSession } from 'react-client-session';
+    useLocation
+} from "react-router-dom";
 import axios from 'axios';
 import { apiUrl } from '../../configs/app';
 import { useNavigate } from 'react-router-dom';
@@ -48,11 +43,7 @@ export function QuestionPage() {
         4.5: 'ยอดเยี่ยม',
         5: 'ยอดเยี่ยม',
     };
-      
-    function getLabelText(value) {
-        return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
-    }
-
+    
     const [value, setValue] = React.useState(0);
     
     const [hover, setHover] = React.useState(-1);
@@ -132,7 +123,7 @@ export function QuestionPage() {
                 )}
                 <Box my={3} px={2}>
                     <FormControl>
-                        <FormLabel  className='NotoSansThai' >ความพึงพอใจต่อ SynZ Application*</FormLabel>
+                        <FormLabel  className='NotoSansThai' >ความพึงพอใจต่อ SynZ Application *</FormLabel>
                         <RadioGroup
                             aria-labelledby="demo-radio-buttons-group-label"
                             defaultValue="0"
@@ -153,7 +144,7 @@ export function QuestionPage() {
 
                 <Box my={3} px={2}>
                     <FormControl>
-                        <FormLabel className='NotoSansThai'>ท่านมีความพึงพอใจที่กฟผ.จัดให้มีบริการให้คำปรึกษาสุขภาพใจออนไลน์สำหรับผู้ปฏิบัติงานที่ระดับใด*</FormLabel>
+                        <FormLabel className='NotoSansThai'>ท่านมีความพึงพอใจที่องค์กร จัดให้มีบริการให้คำปรึกษาสุขภาพใจออนไลน์สำหรับผู้ปฏิบัติงานที่ระดับใด*</FormLabel>
                         <RadioGroup
                             aria-labelledby="demo-radio-buttons-group-label"
                             defaultValue="0"
@@ -195,17 +186,6 @@ export function QuestionPage() {
                         fontSize:'16px',
                     }}
                     >ส่งแบบประเมิน</Button>
-                    {/* <Button variant="text"
-                        className='NotoSansThai'
-                        sx={{ 
-                            fontSize:'16px',
-                            textDecoration:'underline',
-                            color:'#461E99',
-                        }}
-                        component={Link} to="/home"
-                    >
-                         ยังไม่ใช่ตอนนี้
-                    </Button> */}
                 </Stack>
 
 

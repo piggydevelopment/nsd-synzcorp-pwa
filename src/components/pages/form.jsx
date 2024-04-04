@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Stack from '@mui/material/Stack';
@@ -17,11 +17,9 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { psychiatricTreatmentOption } from '../../configs/app';
 import axios from 'axios';
 import { apiUrl } from '../../configs/app';
 import {
-    BrowserRouter as Router,
     useNavigate,
     useLocation
 } from "react-router-dom";
@@ -194,9 +192,9 @@ export const AssesmentForm = () => {
                             onChange={handleChange}
                         >
                             <FormControlLabel name="gender" value="female" control={<Radio />} 
-                            label="หญิง" sx={{margin: '10px 4px 4px 0px'}}/>
+                            label="&nbsp;หญิง" sx={{margin: '10px 4px 4px 0px'}}/>
                             <FormControlLabel name="gender" value="male" control={<Radio />} 
-                            label="ชาย" sx={{margin: '10px 4px 4px 10px'}}/>
+                            label="&nbsp;ชาย" sx={{margin: '10px 4px 4px 10px'}}/>
                         </RadioGroup>
                     </FormControl>
 
@@ -215,15 +213,18 @@ export const AssesmentForm = () => {
                             defaultValue={formData.received_treatment}
                             onChange={(e) => setFormData({...formData, received_treatment: e.target.value})}
                         >
-                            {psychiatricTreatmentOption.map((item) => (
-                                <MenuItem key={item} value={item}
+                                <MenuItem value="Yes"
                                 style={{fontFamily: "Noto Sans Thai",
                                 display: 'block', padding: 10}}
-                                >{item}</MenuItem>
-                            ))}
+                                >ใช่</MenuItem>
+                                <MenuItem value="No"
+                                style={{fontFamily: "Noto Sans Thai",
+                                display: 'block', padding: 10}}
+                                >ไม่ใช่</MenuItem>
+                           
                         </Select>
                     </FormControl>
-                    {formData.received_treatment === 'ใช่' && (
+                    {formData.received_treatment === 'Yes' && (
                         <TextField
                             label="โรงพยาบาล/สถานที่รักษา"
                             name="hospital_treatment"
@@ -244,6 +245,7 @@ export const AssesmentForm = () => {
                         className='NotoSansThai'
                         multiline
                         minRows={2}
+                        helperText="ถ้าไม่มีให้ใส่ว่า ไม่มี"
                     />
                     <TextField
                         label="ประวัติการรักษาทางสุขภาพจิต ของคนในครอบครัว"
@@ -255,6 +257,7 @@ export const AssesmentForm = () => {
                         multiline
                         required
                         minRows={2}
+                        helperText="ถ้าไม่มีให้ใส่ว่า ไม่มี"
                     />
 
                     {/* Section Title */}
@@ -270,6 +273,7 @@ export const AssesmentForm = () => {
                         multiline
                         minRows={2}
                         required
+                        helperText="ถ้าไม่มีให้ใส่ว่า ไม่มี"
                     />
                     <TextField
                         label="ประวัติการแพ้อาหาร"
@@ -281,6 +285,7 @@ export const AssesmentForm = () => {
                         required
                         multiline
                         minRows={2}
+                        helperText="ถ้าไม่มีให้ใส่ว่า ไม่มี"
                     />
 
                     {/* Section Title */}
@@ -320,6 +325,7 @@ export const AssesmentForm = () => {
                         multiline
                         minRows={2}
                         required
+                        helperText="ถ้าไม่มีให้ใส่ว่า ไม่มี"
                     />
                     <TextField
                         label="อาการสำคัญ ที่ต้องการปรึกษา"
@@ -331,6 +337,7 @@ export const AssesmentForm = () => {
                         multiline
                         minRows={2}
                         required
+                        helperText="บอกอาการคร่าวๆ ที่ต้องการปรึกษา"
                     />
 
                     {/* Section Title */}
@@ -341,11 +348,10 @@ export const AssesmentForm = () => {
                     </FormControl>
                     <FormGroup onChange={(e) => {
                         setFormData({ ...formData, [e.target.name]: true });
-                        console.log(formData);
                     }} name="addictions">
-                        <FormControlLabel  control={<Checkbox />} name="addicted_coffee" value="addicted_coffee" label="กาแฟ" />
-                        <FormControlLabel  control={<Checkbox />} name="addicted_alcohol" value="addicted_alcohol" label="บุหรี่" />
-                        <FormControlLabel  control={<Checkbox />} name="addicted_cigarettes" value="addicted_cigarettes" label="แอลกอฮอล์" />
+                        <FormControlLabel  control={<Checkbox />} name="addicted_coffee" value="addicted_coffee" label="กาแฟ" sx={{margin: '15px 4px 4px 0px'}} />
+                        <FormControlLabel  control={<Checkbox />} name="addicted_alcohol" value="addicted_alcohol" label="บุหรี่"  sx={{margin: '10px 4px 4px 0px'}} />
+                        <FormControlLabel  control={<Checkbox />} name="addicted_cigarettes" value="addicted_cigarettes" label="แอลกอฮอล์"  sx={{margin: '10px 4px 4px 0px'}} />
                     </FormGroup>
                     
 

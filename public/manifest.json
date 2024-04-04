@@ -1,87 +1,107 @@
 {
-  "short_name": "Synz for EGAT",
-  "name": "Synz for EGAT",
+  "short_name": "Synz Corporate",
+  "name": "Synz for corporate",
   "icons": [
     {
-      "src": "icon/Assets.xcassets/AppIcon.appiconset/64.png",
+      "src": "icon/64.png",
       "sizes": "64x64",
       "type": "image/png"
     },
     {
-      "src": "icon/Assets.xcassets/AppIcon.appiconset/72.png",
+      "src": "icon/72.png",
       "sizes": "72x72",
       "type": "image/png"
     },
     {
-      "src": "icon/Assets.xcassets/AppIcon.appiconset/128.png",
+      "src": "icon/128.png",
       "sizes": "128x128",
       "type": "image/png"
     },
     {
-      "src": "icon/Assets.xcassets/AppIcon.appiconset/144.png",
+      "src": "icon/144.png",
       "sizes": "144x144",
       "type": "image/png"
     },
     {
-      "src": "192.png",
+      "src": "icon/192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "192.png",
+      "src": "icon/192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "512.png",
+      "src": "icon/512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "512.png",
+      "src": "icon/512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
   ],
-  "start_url": "https://egat.synzofficial.com/",
+  "start_url": "https://corp.synzofficial.com/login",
   "display": "standalone",
   "theme_color": "#461e99",
   "background_color": "#461e99",
   "id": "synzcorp",
-  "description": "Synz application for EGAT.",
+  "description": "Synz application for corporate by NSD Neuron company.",
   "lang": "en",
   "display_override": ["window-controls-overlay"],
   "prefer_related_applications": true,
   "protocol_handlers": [
     {
-      "protocol": "web+egat",
+      "protocol": "synzcorp",
       "url": "/?type=%s"
     }
   ],
   "related_applications": [{
     "platform": "webapp",
-    "url": "https://egat.synzofficial.com"
+    "url": "https://corp.synzofficial.com"
   }],
   "orientation": "portrait-primary",
   "categories": [
     "health",
     "lifestyle",
-    "medical"
+    "medical",
+    "telemedicine",
+    "mental-health"
   ],
-  "screenshots": [
+  "screenshots" : [
     {
-      "src": "screenshots/1280x800-screenshot.png",
-      "sizes": "1280x800",
-      "type": "image/png"
+      "src": "images/screen/1.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Login screen"
     },
     {
-      "src": "screenshots/750x1334-screenshot.png",
-      "sizes": "750x1334",
-      "type": "image/png"
+      "src": "images/screen/2.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Home screen"
+    },
+    {
+      "src": "images/screen/3.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Booking screen"
+    },
+    {
+      "src": "images/screen/4.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Conference screen"
     }
   ]
 }

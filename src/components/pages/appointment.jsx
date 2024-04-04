@@ -29,7 +29,7 @@ export function AppointmentPage() {
     const [specialistId] = useState(useParams().expertID);
     const navigate = useNavigate();
     const [user, setUser] = useState(ReactSession.get('user'));
-    const [bookingTime, setBookingTime] = React.useState();
+    const [bookingTime, setBookingTime] = React.useState(dayjs().add(3, 'hour'));
     const [bookingDate, setBookingDate] = React.useState(dayjs());
     const [isDrawerOpen, setDrawerOpen] = useState(false);
     const [isBookable, setIsBookable] = useState(1);
@@ -37,6 +37,7 @@ export function AppointmentPage() {
     const [specialist, setSpecialist] = useState({
         "id": 0,
         "prefix": "",
+        "type_name": "",
         "firstname": "",
         "lastname": "",
         "nick_name": "",
@@ -67,6 +68,7 @@ export function AppointmentPage() {
                 "firstname": res.data.data.firstname === null ? "" : res.data.data.firstname,
                 "lastname": res.data.data.lastname === null ? "" : res.data.data.lastname,
                 "nick_name": res.data.data.nick_name === null ? "" : res.data.data.nick_name,
+                "type_name": res.data.data.type_name === null ? "" : res.data.data.type_name,
                 "profile_pic_file_name": res.data.data.profile_pic_file_name === null ? "" : res.data.data.profile_pic_file_name,
                 "education_record": res.data.data.education_record === null ? "" : res.data.data.education_record,
                 "work_history": res.data.data.work_history === null ? "" : res.data.data.work_history,
@@ -132,9 +134,9 @@ export function AppointmentPage() {
                         <Typography className='NotoSansThai' mb={1} component="div" sx={{ fontWeight: 600, fontSize: 16, color: '#2C2C2C' }}>
                             {specialist.prefix + specialist.firstname} {specialist.lastname}
                         </Typography>
-                        {/* <Typography  className='NotoSansThai'  component="div"  sx={{ fontSize:13,color:"#656565" }}>
-                         จิตแพทย์
-                        </Typography> */}
+                        <Typography  className='NotoSansThai'  component="div"  sx={{ fontSize:13,color:"#656565" }}>
+                            {specialist.type_name}
+                        </Typography>
                     </div>
                 </Stack>
                 <Button

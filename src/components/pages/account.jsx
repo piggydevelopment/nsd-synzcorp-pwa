@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -8,16 +8,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import FormControl from '@mui/material/FormControl';
 import Typography from '@mui/material/Typography';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
-import { areas, departments } from '../../configs/app';
 import Snackbar from '@mui/material/Snackbar';
 import {
-    BrowserRouter as Router,
     useNavigate
 } from "react-router-dom";
 import { ReactSession } from 'react-client-session';
@@ -29,7 +23,7 @@ export function AccountPage() {
     const navigate = useNavigate();
     const [open, setOpen] = React.useState(false);
     const [snackbar, setSnackBar] = React.useState(false);
-
+    const version = "1.0.6";
 
     const handleSubmit = async e => {
         // validate all input is not empty
@@ -46,13 +40,6 @@ export function AccountPage() {
         } catch (error) {
             alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งในภายหลัง')
         }
-    };
-
-    const handleChangeArea = (event) => {
-        setUser({ ...user, attribute_2: event.target.value });
-    };
-    const handleChangeDepartment = (event) => {
-        setUser({ ...user, attribute_1: event.target.value });
     };
 
     const handleClose = (event, reason) => {
@@ -84,7 +71,7 @@ export function AccountPage() {
     };
     return (
         <Box sx={{ backgroundColor: '#FFF', paddingBottom: '80px' }}>
-            <Chat/>
+            <Chat />
             <Box
                 component="form"
                 autoComplete="off"
@@ -123,49 +110,21 @@ export function AccountPage() {
                         variant="standard"
                         value={user.phone_number}
                         defaultValue={user.phone_number}
-                        onChange={(e) => setUser({...user, phone_number: e.target.value})}
+                        onChange={(e) => setUser({ ...user, phone_number: e.target.value })}
                         inputProps={{ maxLength: 10, pattern: "[0-9]{10}" }}
                         type="tel"
                         InputLabelProps={{
                             shrink: true,
                         }}
                     />
-                    
-                    <FormControl fullWidth>
-                        <InputLabel id="synz-select-area">สังกัด</InputLabel>
-                        <Select
-                            labelId="synz-select-area"
-                            id="synz-select-area"
-                            value={user.attribute_2}
-                            label="สังกัด *"
-                            variant='standard'
-                            required={true}
-                            onChange={handleChangeArea}
-                        >
-                            {areas.map((area, index) => (
-                                <MenuItem key={index} value={area}>{area}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
 
-                    <FormControl fullWidth>
-                        <InputLabel id="synz-select-department">สถานปที่ฏิบัติงาน</InputLabel>
-                        <Select
-                            labelId="synz-select-department"
-                            id="synz-select-department"
-                            value={user.attribute_1}
-                            label="สถานปที่ฏิบัติงาน *"
-                            required={true}
-                            variant='standard'
-                            onChange={handleChangeDepartment}
-                        >
-                            {departments.map((department, index) => (
-                                <MenuItem
-                                key={index}
-                                value={department}>{department}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    <TextField
+                        label="องค์กร"
+                        variant="standard"
+                        value={user.attribute_1}
+                        onChange={(e) => setUser({ ...user, attribute_1: e.target.value })}
+                        disabled
+                    />
 
                     <Button
                         variant="contained"
@@ -229,19 +188,19 @@ export function AccountPage() {
                         >ออกจากระบบ   </Button>
                     </Stack>
                     <Button
-                            variant="text"
-                            type="link"
-                            fullWidth
-                            color="info"
-                            size="large"
-                            className='NotoSansThai'
-                            href="tel:0949244997"
-                        >Call center 094-924-4997</Button>
+                        variant="text"
+                        type="link"
+                        fullWidth
+                        color="info"
+                        size="large"
+                        className='NotoSansThai'
+                        href="tel:0949244997"
+                    >Call center 094-924-4997</Button>
 
-                    </Stack>
-                    <Typography className='NotoSansThai' marginTop={3} component="div" sx={{ flexGrow: 1, textAlign: 'center', fontWeight: 400, fontSize: 12 }}>
-                        Version: 1.0.5
-                    </Typography>
+                </Stack>
+                <Typography className='NotoSansThai' marginTop={3} component="div" sx={{ flexGrow: 1, textAlign: 'center', fontWeight: 400, fontSize: 12 }}>
+                    Version: {version}
+                </Typography>
 
                 <Dialog
                     open={open}
@@ -267,13 +226,13 @@ export function AccountPage() {
                 </Dialog>
             </Box>
             <Snackbar
-                    open={snackbar}
-                    autoHideDuration={3000}
-                    onClose={() => {
-                        setSnackBar(false);
-                    }}
-                    message="บันทึกเสร็จเรียบร้อย"
-                />
+                open={snackbar}
+                autoHideDuration={3000}
+                onClose={() => {
+                    setSnackBar(false);
+                }}
+                message="บันทึกเสร็จเรียบร้อย"
+            />
         </Box>
     );
 }

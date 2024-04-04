@@ -12,7 +12,7 @@ export default function Chat (props) {
       position: "right", 
       locale: "th", 
       type: "expanded_bubble",
-      launcherTitle: "ให้ Synz ช่วยเลือกให้ไหม?",
+      launcherTitle: "ถาม Synz",
     };
 
     (function(d,t) {

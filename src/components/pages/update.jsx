@@ -1,22 +1,14 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import TextField from '@mui/material/TextField';
-import { areas, departments } from '../../configs/app';
 import Snackbar from '@mui/material/Snackbar';
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
 import {
-    BrowserRouter as Router,
-    Link,
     useNavigate
 } from "react-router-dom";
 import { ReactSession } from 'react-client-session';
@@ -42,15 +34,9 @@ export function UpdatePage() {
                 navigate('/home')
             }, 3000);
         } catch (error) {
-            alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งในภายหลัง')
+            console.log(error)
+            alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งในภายหลัง' + "\n" + error.response.data.message)
         }
-    };
-
-    const handleChangeArea = (event) => {
-        setUser({...user, attribute_2: event.target.value});
-    };
-    const handleChangeDepartment = (event) => {
-        setUser({...user, attribute_1: event.target.value});
     };
 
     const handleClose = (event, reason) => {
@@ -114,44 +100,12 @@ export function UpdatePage() {
                             shrink: true,
                           }}
                     />
-
-                    <FormControl fullWidth>
-                        <InputLabel id="synz-select-label">สังกัด</InputLabel>
-                        <Select
-                            labelId="synz-select-label"
-                            id="synz-select-department"
-                            value={user.attribute_2}
-                            label="สังกัด *"
-                            required={true}
-                            variant='standard'
-                            onChange={handleChangeDepartment}
-                        >
-                            {areas.map((area, index) => (
-                                <MenuItem key={index} value={area}>{area}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-
-                    <FormControl fullWidth>
-                        <InputLabel id="synz-select-label">สถานปที่ฏิบัติงาน</InputLabel>
-                        <Select
-                            labelId="synz-select-label"
-                            id="synz-select-area"
-                            value={user.attribute_1}
-                            label="สถานปที่ฏิบัติงาน *"
-                            variant='standard'
-                            required={true}
-                            onChange={handleChangeArea}
-                        >
-                            {departments.map((department, index) => (
-                                <MenuItem
-                                key={index} 
-                                value={department}>{department}</MenuItem>
-                            ))}
-                            
-                        </Select>
-                    </FormControl>
-
+                    <TextField
+                        label="องค์กร"
+                        variant="standard"
+                        value={user.attribute_1}
+                        onChange={(e) => setUser({ ...user, attribute_1: e.target.value })}
+                    />
     
                     <Button 
                     variant="contained"  

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 commit=$1
-branch=$2 || master
+branch=$2 || main
 
 git add .
 git commit -m "$commit"

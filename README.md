@@ -1,4 +1,4 @@
-# Synz application for EGAT
+# Synz application for B2B
 
 ## Install and run
 - `npm install`
@@ -6,4 +6,4 @@
 - `npm run build`
 
 ## This project auto deploy
-Action pipeline is autorun when push to `master` branch.
+Action pipeline is autorun when push to `main` branch.

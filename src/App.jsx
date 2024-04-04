@@ -22,7 +22,7 @@ import {
 } from "react-router-dom";
 import { ReactSession } from 'react-client-session';
 import { ConfirmPage } from 'components/pages/confirm';
-import { PersonalInformationForm } from 'components/pages/personal-information-form';
+import { AssesmentForm } from 'components/pages/form';
 import { ViewPage } from 'components/pages/view';
 function App() {
   ReactSession.setStoreType("localStorage");
@@ -39,7 +39,7 @@ function App() {
         <Route path="/confirm" element={<ConfirmPage />} />
         <Route path="/appointment/:expertID" element={<AppointmentPage />} />
         <Route path="/question" element={<QuestionPage />} />
-        <Route path="/form" element={<PersonalInformationForm />} />
+        <Route path="/form" element={<AssesmentForm />} />
         <Route path="/update" element={<UpdatePage />} />
         <Route path="/meet" element={<MeetPage />} />
         /** *** Layout bottom */

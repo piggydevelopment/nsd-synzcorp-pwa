@@ -26,7 +26,7 @@ import {
     useLocation
 } from "react-router-dom";
 
-export const PersonalInformationForm = () => {
+export const AssesmentForm = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [user, setUser] = useState(ReactSession.get('user'));

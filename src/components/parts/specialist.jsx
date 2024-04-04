@@ -1,6 +1,6 @@
 // import missing
 
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -12,16 +12,10 @@ import Button from '@mui/material/Button';
 import '@splidejs/react-splide/css';
 import '../../assets/css/base.css';
 import { ReactSession } from 'react-client-session';
-import {
-    BrowserRouter as Router,
-    useNavigate,
-    Link
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 export const Specialist = (props) => {
     const [type, setType] = useState(props.type);
     const [data, setData] = useState(props.data);
-    const [user, setUser] = useState(ReactSession.get('user'));
-    const navigate = useNavigate();
 
     return (
         <Box sx={{ p: 3 }}>
@@ -43,8 +37,8 @@ export const Specialist = (props) => {
                         <SplideSlide key={item.id}>
                             <Card sx={{ border: 0, boxShadow: 'unset' }}>
                                 <CardActionArea>
-                                    <Link 
-                                    to={`/appointment/${item.id}`}
+                                    <Link
+                                        to={`/appointment/${item.id}`}
                                     >
                                         <CardMedia
                                             component="img"
@@ -53,7 +47,7 @@ export const Specialist = (props) => {
                                             alt="green iguana"
                                         />
                                     </Link>
-                                    
+
                                     <CardContent className='cardcontent' sx={{ backgroundColor: '#6565651c' }}>
                                         <Typography gutterBottom textAlign={'center'} className='NotoSansThai ts-1' component="div">
                                             {item.prefix + item.firstname + ' ' + item.lastname}
@@ -64,7 +58,7 @@ export const Specialist = (props) => {
                                         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                                             {item.topics_json.map((topic) => (
                                                 <div className='tag' key={topic.id}> <img src={topic.icon_file_name} className='me-2 sm-icon' /> {topic.name}</div>
-                                                ))
+                                            ))
                                             }
                                         </div>
                                         <Button

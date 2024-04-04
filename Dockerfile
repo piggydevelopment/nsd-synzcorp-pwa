@@ -1,11 +1,22 @@
-FROM node:14
+FROM node:20-alpine
+# Set working directory for all build stages.
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-RUN npm install -g serve
+
+# Production environment
+ENV NODE_ENV production
+
+# Copy the rest of the source files into the image.
 COPY . .
 
-RUN npm run build
+# Install dependency
+RUN npm install -g serve pnpm
+RUN pnpm install
 
+# Build package
+RUN pnpm build
+
+# Expose the port that the application listens on.
 EXPOSE 3000
-CMD ["serve", "-s", "build"]
+
+# Run the application.
+CMD ["pnpm", "serve"]

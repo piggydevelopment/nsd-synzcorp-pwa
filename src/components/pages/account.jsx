@@ -9,6 +9,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import FormControl from '@mui/material/FormControl';
+import Typography from '@mui/material/Typography';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -228,16 +229,19 @@ export function AccountPage() {
                         >ออกจากระบบ   </Button>
                     </Stack>
                     <Button
-                        variant="text"
-                        type="link"
-                        fullWidth
-                        color="info"
-                        size="large"
-                        className='NotoSansThai'
-                        href="tel:0949244997"
-                    >Call center 094-924-4997</Button>
+                            variant="text"
+                            type="link"
+                            fullWidth
+                            color="info"
+                            size="large"
+                            className='NotoSansThai'
+                            href="tel:0949244997"
+                        >Call center 094-924-4997</Button>
 
-                </Stack>
+                    </Stack>
+                    <Typography className='NotoSansThai' marginTop={3} component="div" sx={{ flexGrow: 1, textAlign: 'center', fontWeight: 400, fontSize: 12 }}>
+                        Version: 1.0.5
+                    </Typography>
 
                 <Dialog
                     open={open}

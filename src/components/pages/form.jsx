@@ -23,18 +23,18 @@ import {
     useNavigate,
     useLocation
 } from "react-router-dom";
+import dayjs from 'dayjs';
 
 export const AssesmentForm = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [user, setUser] = useState(ReactSession.get('user'));
     const [selectedAddictions, setSelectedAddictions] = useState([]);
-    const [gender, setGender] = useState(user.gender);
     const [formData, setFormData] = useState({
         firstname: user.firstname,
         lastname: user.lastname,
         occupation: user.occupation,
-        birthday: user.birthday,
+        birthday: dayjs(user.birthday).format('YYYY-MM-DD'),
         gender: user.gender,
         idcard_number: user.idcard_number,
         current_medicine: user.current_medicine,
@@ -53,29 +53,22 @@ export const AssesmentForm = () => {
     });
 
     useEffect(() => {
-        setSelectedAddictions([ 
-            user.addicted_cigarettes === true && "addicted_cigarettes",
-            user.addicted_coffee === true && "addicted_coffee", 
-            user.addicted_alcohol === true && "addicted_alcohol"
-        ]);
-    }, [user]);
+        getUserInfo();
+    }, [formData]);
+
+    const getUserInfo = async () => {
+        let userCurrent = await ReactSession.get('user');
+        let userInfo = await axios.get(`${apiUrl}/api/user/${userCurrent.id}`);
+        await setUser(userInfo.data.data);
+        // console.log(userCurrent)
+    }
+
 
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleAddictionChange = async (e) => {
-        try{
-            
-            let selectedAddiction = await e.target.value.filter(addic => addic);
-            await setSelectedAddictions([...selectedAddictions, selectedAddiction]);
-            console.log(selectedAddictions)
-        }
-        catch(error) {
-            alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้งในภายหลัง')
-        }
-    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -159,8 +152,8 @@ export const AssesmentForm = () => {
                         onChange={handleChange}
                         required
                     />
+
                     <TextField
-                        label="วัน/เดือน/ปีเกิด"
                         name="birthday"
                         variant="standard"
                         value={formData.birthday}
@@ -168,6 +161,7 @@ export const AssesmentForm = () => {
                         onChange={handleChange}
                         type="date"
                         required
+                        helperText="วันเดือนปีเกิด (dd/mm/yyyy)"
                     />
                     <TextField
                         label="เลขประจำตัวประชาชน"
@@ -179,6 +173,7 @@ export const AssesmentForm = () => {
                         onChange={handleChange}
                         type="tel"
                         required
+                        helperText="เลขประจำตัวประชาชนต้องประกอบด้วย 13 หลัก"
                     />
                     <FormControl>
                         <FormLabel id="radio-buttons-group-label">เพศ</FormLabel>
@@ -191,10 +186,10 @@ export const AssesmentForm = () => {
                             sx={{ paddingBottom: 2}}
                             onChange={handleChange}
                         >
-                            <FormControlLabel name="gender" value="female" control={<Radio />} 
-                            label="&nbsp;หญิง" sx={{margin: '10px 4px 4px 0px'}}/>
-                            <FormControlLabel name="gender" value="male" control={<Radio />} 
-                            label="&nbsp;ชาย" sx={{margin: '10px 4px 4px 10px'}}/>
+                            <FormControlLabel name="gender" value="female" control={<Radio checked={formData.gender=='female'}/>} 
+                            label="หญิง" sx={{margin: '10px 4px 4px 0px'}}/>
+                            <FormControlLabel name="gender" value="male" control={<Radio checked={formData.gender=='male'}/>} 
+                            label="ชาย" sx={{margin: '10px 4px 4px 10px'}}/>
                         </RadioGroup>
                     </FormControl>
 
@@ -349,9 +344,9 @@ export const AssesmentForm = () => {
                     <FormGroup onChange={(e) => {
                         setFormData({ ...formData, [e.target.name]: true });
                     }} name="addictions">
-                        <FormControlLabel  control={<Checkbox />} name="addicted_coffee" value="addicted_coffee" label="กาแฟ" sx={{margin: '15px 4px 4px 0px'}} />
-                        <FormControlLabel  control={<Checkbox />} name="addicted_alcohol" value="addicted_alcohol" label="บุหรี่"  sx={{margin: '10px 4px 4px 0px'}} />
-                        <FormControlLabel  control={<Checkbox />} name="addicted_cigarettes" value="addicted_cigarettes" label="แอลกอฮอล์"  sx={{margin: '10px 4px 4px 0px'}} />
+                        <FormControlLabel  control={<Checkbox checked={formData.addicted_coffee}/>} name="addicted_coffee" value="addicted_coffee" label="กาแฟ" />
+                        <FormControlLabel  control={<Checkbox checked={formData.addicted_alcohol}/>} name="addicted_alcohol" value="addicted_alcohol" label="บุหรี่" />
+                        <FormControlLabel  control={<Checkbox checked={formData.addicted_cigarettes}/>} name="addicted_cigarettes" value="addicted_cigarettes" label="แอลกอฮอล์" />
                     </FormGroup>
                     
 

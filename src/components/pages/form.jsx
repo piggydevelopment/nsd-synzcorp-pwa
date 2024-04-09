@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Stack from '@mui/material/Stack';
@@ -17,15 +17,17 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import Checkbox from '@mui/material/Checkbox';
+import { psychiatricTreatmentOption } from '../../configs/app';
 import axios from 'axios';
 import { apiUrl } from '../../configs/app';
 import {
+    BrowserRouter as Router,
     useNavigate,
     useLocation
 } from "react-router-dom";
 import dayjs from 'dayjs';
 
-export const AssesmentForm = () => {
+export const FormPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [user, setUser] = useState(ReactSession.get('user'));
@@ -54,21 +56,19 @@ export const AssesmentForm = () => {
 
     useEffect(() => {
         getUserInfo();
-    }, [formData]);
+    }, []);
 
     const getUserInfo = async () => {
         let userCurrent = await ReactSession.get('user');
         let userInfo = await axios.get(`${apiUrl}/api/user/${userCurrent.id}`);
-        await setUser(userInfo.data.data);
-        // console.log(userCurrent)
+        
+        setUser(userInfo.data.data);
     }
-
 
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
     };
-
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -91,7 +91,8 @@ export const AssesmentForm = () => {
                 addictions.addicted_alcohol = true;
             }
         });
-
+        // console.log(formData);
+        // return false;
         try{
             let update_data = await axios.post(`${apiUrl}/api/user/treatment-information/${user.id}`, formData)
             await ReactSession.set('user', update_data.data.data);
@@ -152,7 +153,6 @@ export const AssesmentForm = () => {
                         onChange={handleChange}
                         required
                     />
-
                     <TextField
                         name="birthday"
                         variant="standard"
@@ -186,9 +186,9 @@ export const AssesmentForm = () => {
                             sx={{ paddingBottom: 2}}
                             onChange={handleChange}
                         >
-                            <FormControlLabel name="gender" value="female" control={<Radio checked={formData.gender=='female'}/>} 
+                            <FormControlLabel name="gender" value="female" control={<Radio checked={formData.gender==='female'}/>} 
                             label="หญิง" sx={{margin: '10px 4px 4px 0px'}}/>
-                            <FormControlLabel name="gender" value="male" control={<Radio checked={formData.gender=='male'}/>} 
+                            <FormControlLabel name="gender" value="male" control={<Radio checked={formData.gender==='male'}/>} 
                             label="ชาย" sx={{margin: '10px 4px 4px 10px'}}/>
                         </RadioGroup>
                     </FormControl>
@@ -208,18 +208,15 @@ export const AssesmentForm = () => {
                             defaultValue={formData.received_treatment}
                             onChange={(e) => setFormData({...formData, received_treatment: e.target.value})}
                         >
-                                <MenuItem value="Yes"
+                            {psychiatricTreatmentOption.map((item) => (
+                                <MenuItem key={item} value={item}
                                 style={{fontFamily: "Noto Sans Thai",
                                 display: 'block', padding: 10}}
-                                >ใช่</MenuItem>
-                                <MenuItem value="No"
-                                style={{fontFamily: "Noto Sans Thai",
-                                display: 'block', padding: 10}}
-                                >ไม่ใช่</MenuItem>
-                           
+                                >{item}</MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
-                    {formData.received_treatment === 'Yes' && (
+                    {formData.received_treatment === 'ใช่' && (
                         <TextField
                             label="โรงพยาบาล/สถานที่รักษา"
                             name="hospital_treatment"
@@ -341,15 +338,16 @@ export const AssesmentForm = () => {
                         <InputLabel>ประวัติการเสพติด</InputLabel>
                         
                     </FormControl>
-                    <FormGroup onChange={(e) => {
-                        setFormData({ ...formData, [e.target.name]: true });
+                    <FormGroup 
+                    onChange={(e) => {
+                    let isCheck = !formData[e.target.name] ? true : false;
+                    setFormData({ ...formData, [e.target.name]: isCheck });
                     }} name="addictions">
                         <FormControlLabel  control={<Checkbox checked={formData.addicted_coffee}/>} name="addicted_coffee" value="addicted_coffee" label="กาแฟ" />
                         <FormControlLabel  control={<Checkbox checked={formData.addicted_alcohol}/>} name="addicted_alcohol" value="addicted_alcohol" label="บุหรี่" />
                         <FormControlLabel  control={<Checkbox checked={formData.addicted_cigarettes}/>} name="addicted_cigarettes" value="addicted_cigarettes" label="แอลกอฮอล์" />
                     </FormGroup>
                     
-
                     <Button
                         variant="contained"
                         type="submit"

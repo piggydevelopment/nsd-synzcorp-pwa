@@ -5,13 +5,15 @@ import { JitsiMeeting } from '@jitsi/react-sdk';
 import axios from 'axios';
 import { apiUrl } from '../../configs/app';
 import Chat from './chat';
+import { ReactSession } from 'react-client-session';
+import dayjs from 'dayjs';
 
 export function MeetPage() {
     const navigate = useNavigate();
     const location = useLocation();
 
     const [room, setRoom] = useState(location.state.room) || "synzroom";
-    const [user, setUser] = useState(location.state.user);
+    const [user, setUser] = useState(ReactSession.get('user'));
     const [domain, setDomain] = useState('meetsynz.nsd.services');
     const [toolbar, setToolbar] = useState({
         toolbarButtons: [
@@ -27,35 +29,31 @@ export function MeetPage() {
         startScreenSharing: false,
         enableEmailInStats: false
     });
-    const [meet_info, setMeetInfo] = useState({});
+    const [meet_info, setMeetInfo] = useState({
+        user_id: user.id,
+        appointment_number: location.state.room,
+        start_datetime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+        end_datetime: ''
+    });
 
     useEffect(() => {
-        // set meet info
-        let meet = {
-            user_id: user.id,
-            appointment_number: location.state.room,
-            start_datetime: Date.now(),
-            end_datetime: ''
-        }
-        
-        setMeetInfo(meet)
-        localStorage.setItem('meet_' + location.state.room, JSON.stringify(meet));
-
+        axios.post(apiUrl + '/api/appointment/meetingroom/start', meet_info);
+        console.log('meeting', meet_info)
+        localStorage.setItem('meet_' + location.state.room, JSON.stringify(meet_info));
         setRoom(location.state.room)
-
     }, []);
-
+    
     const exitHandler = async () => {
         let data = {
             user_id: user.id,
             appointment_number: location.state.room,
-            start_datetime: meet_info.start_time,
-            end_datetime: Date.now()
+            start_datetime: meet_info.start_datetime,
+            end_datetime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         };
 
         await setMeetInfo(data);
         await localStorage.setItem('meet_' + location.state.room, '' );
-        //await axios.post(apiUrl + '/api/appointment/meetingroom/time', data);
+        await axios.post(apiUrl + '/api/appointment/meetingroom/end', data);
 
         navigate('/question', {state: location.state})
     };
@@ -78,7 +76,7 @@ export function MeetPage() {
                         disabled : true
                     },
                     p2p: {
-                        enabled: true
+                        enabled: false
                     },
                     setVideoQuality: 720,
                     disablePolls: true,

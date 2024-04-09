@@ -334,18 +334,17 @@ export const FormPage = () => {
 
                     {/* Section Title */}
                     
-                    <FormControl fullWidth margintop={20}>
+                    <FormControl fullWidth marginTop={20} style={{marginBottom: "30px"}}>
                         <InputLabel>ประวัติการเสพติด</InputLabel>
-                        
                     </FormControl>
-                    <FormGroup 
+                    <FormGroup
                     onChange={(e) => {
                     let isCheck = !formData[e.target.name] ? true : false;
                     setFormData({ ...formData, [e.target.name]: isCheck });
                     }} name="addictions">
-                        <FormControlLabel  control={<Checkbox checked={formData.addicted_coffee}/>} name="addicted_coffee" value="addicted_coffee" label="กาแฟ" />
-                        <FormControlLabel  control={<Checkbox checked={formData.addicted_alcohol}/>} name="addicted_alcohol" value="addicted_alcohol" label="บุหรี่" />
-                        <FormControlLabel  control={<Checkbox checked={formData.addicted_cigarettes}/>} name="addicted_cigarettes" value="addicted_cigarettes" label="แอลกอฮอล์" />
+                        <FormControlLabel control={<Checkbox checked={formData.addicted_coffee} style={{width: '45px', height: '45px'}}/>} name="addicted_coffee" value="addicted_coffee" label="กาแฟ" />
+                        <FormControlLabel control={<Checkbox checked={formData.addicted_alcohol} style={{width: '45px', height: '45px'}}/>} name="addicted_alcohol" value="addicted_alcohol" label="บุหรี่" />
+                        <FormControlLabel control={<Checkbox checked={formData.addicted_cigarettes} style={{width: '45px', height: '45px'}}/>} name="addicted_cigarettes" value="addicted_cigarettes" label="แอลกอฮอล์" />
                     </FormGroup>
                     
                     <Button

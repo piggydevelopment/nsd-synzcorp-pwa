@@ -141,7 +141,11 @@ export function HistoryPage() {
                                                     user: user.firstname + " " + user.lastname
                                                 }
                                                 localStorage.setItem('current_meet', JSON.stringify(data));
-                                                navigate('/meet', { state: data });
+                                                if(booking.second_meeting_room_url === null || booking.second_meeting_room_url === undefined) {
+                                                    navigate('/meet', { state: data });
+                                                } else {
+                                                    window.location.href=booking.second_meeting_room_url
+                                                }
                                             }}
                                             className='NotoSansThai'
                                             sx={{

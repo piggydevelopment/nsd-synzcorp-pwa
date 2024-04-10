@@ -343,8 +343,8 @@ export const FormPage = () => {
                     setFormData({ ...formData, [e.target.name]: isCheck });
                     }} name="addictions">
                         <FormControlLabel control={<Checkbox checked={formData.addicted_coffee} style={{width: '45px', height: '45px'}}/>} name="addicted_coffee" value="addicted_coffee" label="กาแฟ" />
-                        <FormControlLabel control={<Checkbox checked={formData.addicted_alcohol} style={{width: '45px', height: '45px'}}/>} name="addicted_alcohol" value="addicted_alcohol" label="บุหรี่" />
-                        <FormControlLabel control={<Checkbox checked={formData.addicted_cigarettes} style={{width: '45px', height: '45px'}}/>} name="addicted_cigarettes" value="addicted_cigarettes" label="แอลกอฮอล์" />
+                        <FormControlLabel control={<Checkbox checked={formData.addicted_alcohol} style={{width: '45px', height: '45px'}}/>} name="addicted_alcohol" value="addicted_alcohol" label="แอลกอฮอล์" />
+                        <FormControlLabel control={<Checkbox checked={formData.addicted_cigarettes} style={{width: '45px', height: '45px'}}/>} name="addicted_cigarettes" value="addicted_cigarettes" label="บุหรี่" />
                     </FormGroup>
                     
                     <Button

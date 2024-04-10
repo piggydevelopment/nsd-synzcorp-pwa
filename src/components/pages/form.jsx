@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Stack from '@mui/material/Stack';
@@ -20,18 +20,13 @@ import Checkbox from '@mui/material/Checkbox';
 import { psychiatricTreatmentOption } from '../../configs/app';
 import axios from 'axios';
 import { apiUrl } from '../../configs/app';
-import {
-    BrowserRouter as Router,
-    useNavigate,
-    useLocation
-} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import dayjs from 'dayjs';
 
 export const FormPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [user, setUser] = useState(ReactSession.get('user'));
-    const [selectedAddictions, setSelectedAddictions] = useState([]);
     const [formData, setFormData] = useState({
         firstname: user.firstname,
         lastname: user.lastname,
@@ -73,26 +68,6 @@ export const FormPage = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         
-        // assign 'Y' to each member of selectedAddictions
-        let addictions = {
-            addicted_cigarettes: false,
-            addicted_coffee: false,
-            addicted_alcohol: false
-        }
-
-        await selectedAddictions.map(addiction => {
-            if([addiction][0] == 'addicted_cigarettes'){ 
-                addictions.addicted_cigarettes = true;
-            }
-            if([addiction][0] == 'addicted_coffee'){ 
-                addictions.addicted_coffee = true;
-            }
-            if([addiction][0] == 'addicted_alcohol'){ 
-                addictions.addicted_alcohol = true;
-            }
-        });
-        // console.log(formData);
-        // return false;
         try{
             let update_data = await axios.post(`${apiUrl}/api/user/treatment-information/${user.id}`, formData)
             await ReactSession.set('user', update_data.data.data);
@@ -338,9 +313,9 @@ export const FormPage = () => {
                         <InputLabel>ประวัติการเสพติด</InputLabel>
                     </FormControl>
                     <FormGroup
-                    onChange={(e) => {
+                    onChange={async (e) => {
                     let isCheck = !formData[e.target.name] ? true : false;
-                    setFormData({ ...formData, [e.target.name]: isCheck });
+                    await setFormData({ ...formData, [e.target.name]: isCheck });
                     }} name="addictions">
                         <FormControlLabel control={<Checkbox checked={formData.addicted_coffee} style={{width: '45px', height: '45px'}}/>} name="addicted_coffee" value="addicted_coffee" label="กาแฟ" />
                         <FormControlLabel control={<Checkbox checked={formData.addicted_alcohol} style={{width: '45px', height: '45px'}}/>} name="addicted_alcohol" value="addicted_alcohol" label="แอลกอฮอล์" />

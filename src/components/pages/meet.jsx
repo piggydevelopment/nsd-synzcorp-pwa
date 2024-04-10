@@ -13,9 +13,9 @@ export function MeetPage() {
     const location = useLocation();
 
     const [room, setRoom] = useState(location.state.room) || "synzroom";
-    const [user, setUser] = useState(ReactSession.get('user'));
-    const [domain, setDomain] = useState('meetsynz.nsd.services');
-    const [toolbar, setToolbar] = useState({
+    const user = ReactSession.get('user');
+    const domain = 'meetsynz.nsd.services';
+    const toolbar = {
         toolbarButtons: [
             'microphone',
             'camera',
@@ -28,7 +28,8 @@ export function MeetPage() {
         disableModeratorIndicator: true,
         startScreenSharing: false,
         enableEmailInStats: false
-    });
+    };
+
     const [meet_info, setMeetInfo] = useState({
         user_id: user.id,
         appointment_number: location.state.room,
@@ -38,10 +39,9 @@ export function MeetPage() {
 
     useEffect(() => {
         axios.post(apiUrl + '/api/appointment/meetingroom/start', meet_info);
-        console.log('meeting', meet_info)
         localStorage.setItem('meet_' + location.state.room, JSON.stringify(meet_info));
         setRoom(location.state.room)
-    }, []);
+    }, [room]);
     
     const exitHandler = async () => {
         let data = {
@@ -90,27 +90,13 @@ export function MeetPage() {
                         enabled: false
                     },
                     hideAddRoomButton: true,
-                    enableClosePage: false,
-                    customToolbarButtons: [
-                        {
-                            icon: '/images/stethoscope.svg',
-                            id: 'synz-tool',
-                            text: 'Synz Tools'
-                        }
-                    ],
-                    customParticipantMenuButtons: [
-                        {
-                            icon: '/images/stethoscope.svg',
-                            id: 'synz-tool',
-                            text: 'Synz Tools'
-                        }
-                    ],
+                    enableClosePage: false
                 }}
                 interfaceConfigOverwrite={{
                     DISABLE_JOIN_LEAVE_NOTIFICATIONS: true
                 }}
                 userInfo={{
-                    displayName: user
+                    displayName: user.firstname + " " + user.lastname
                 }}
                 onApiReady={(externalApi) => {
                     // here you can attach custom event listeners to the Jitsi Meet External API

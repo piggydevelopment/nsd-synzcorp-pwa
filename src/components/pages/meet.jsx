@@ -15,20 +15,6 @@ export function MeetPage() {
     const [room, setRoom] = useState(location.state.room) || "synzroom";
     const user = ReactSession.get('user');
     const domain = 'meetsynz.nsd.services';
-    const toolbar = {
-        toolbarButtons: [
-            'microphone',
-            'camera',
-            'fullscreen',
-            'synz-tool',
-            'profile',
-            'raisehand'
-        ],
-        startWithAudioMuted: true,
-        disableModeratorIndicator: true,
-        startScreenSharing: false,
-        enableEmailInStats: false
-    };
 
     const [meet_info, setMeetInfo] = useState({
         user_id: user.id,
@@ -65,7 +51,17 @@ export function MeetPage() {
                 domain={domain}
                 roomName={room}
                 configOverwrite={{
-                    toolbar, 
+                    toolbarButtons: [
+                        'microphone',
+                        'camera',
+                        'fullscreen',
+                        'raisehand',
+                        'hangup'
+                    ],
+                    startWithAudioMuted: true,
+                    disableModeratorIndicator: true,
+                    startScreenSharing: false,
+                    enableEmailInStats: false, 
                     prejoinConfig: {
                         enabled: false
                     },

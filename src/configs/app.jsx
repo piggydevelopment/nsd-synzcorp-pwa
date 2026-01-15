@@ -1,5 +1,5 @@
 
-export const apiUrl = 'https://corp-api.synzofficial.com';
+export const apiUrl = 'http://localhost:3000';
 export const apiToken = '';
 export const cs_token = 'yoJJA4KDq7gBdYHN9AUtL6iU';
 export const cs_identifier = 'YeLJZE6Pa9AvzSicdoeuseWV';

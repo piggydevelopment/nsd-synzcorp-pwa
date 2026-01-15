@@ -22,7 +22,7 @@ import {
 } from "react-router-dom";
 import { ReactSession } from 'react-client-session';
 import { ConfirmPage } from 'components/pages/confirm';
-import { AssesmentForm } from 'components/pages/form';
+import { FormPage as AssesmentForm } from 'components/pages/form';
 import { ViewPage } from 'components/pages/view';
 function App() {
   ReactSession.setStoreType("localStorage");

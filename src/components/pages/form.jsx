@@ -17,11 +17,12 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { psychiatricTreatmentOption } from '../../configs/app';
 import axios from 'axios';
 import { apiUrl } from '../../configs/app';
 import { useNavigate, useLocation } from "react-router-dom";
 import dayjs from 'dayjs';
+
+const psychiatricTreatmentOption = ['ใช่', 'ไม่'];
 
 export const FormPage = () => {
     const navigate = useNavigate();

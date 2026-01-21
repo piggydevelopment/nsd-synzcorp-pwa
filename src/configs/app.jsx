@@ -1,4 +1,5 @@
-export const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3000";
+export const apiUrl =
+  process.env.REACT_APP_API_URL || "https://api.synzofficial.com";
 export const apiToken = "";
 export const cs_token = "yoJJA4KDq7gBdYHN9AUtL6iU";
 export const cs_identifier = "YeLJZE6Pa9AvzSicdoeuseWV";

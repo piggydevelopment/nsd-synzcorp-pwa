@@ -32,11 +32,15 @@ graph TD
     end
 
     User --> Login
-    Login -- Input Email --> API
-    API -- Send OTP --> User
+    Login -- Input Email (Req OTP) --> API
+    API -- Send OTP Ref --> Login
     Login --> OTP
-    OTP -- Verify OTP --> API
-    API -- Token/User Data --> OTP
+    OTP -- Input OTP (Verify) --> API
+    API -- Return Token --> OTP
+    
+    OTP -- Register/Login (Token + OrgID) --> API
+    API -- Return User Profile --> OTP
+    
     OTP --> Terms
     Terms -- Accept --> Home
     Terms -- Reject --> Login

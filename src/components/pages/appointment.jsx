@@ -1,266 +1,593 @@
-
-import React, { useState, useEffect } from 'react';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import ArrowBackIosNewOutlinedIcon from '@mui/icons-material/ArrowBackIosNewOutlined';
-import Typography from '@mui/material/Typography';
-import Avatar from '@mui/material/Avatar';
-import Drawer from '@mui/material/Drawer';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import React, { useState, useEffect, useMemo } from "react";
 import {
-    BrowserRouter as Router,
-    Link,
-    useParams
-} from "react-router-dom";
-import dayjs from 'dayjs';
-import axios from 'axios';
-import { apiUrl, orgId } from '../../configs/app';
-import { ReactSession } from 'react-client-session';
-import { useNavigate } from 'react-router-dom';
-import Loading from '../parts/loading';
+  Stack,
+  Box,
+  Typography,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Avatar,
+  Button,
+  Container,
+  Card,
+  CardContent,
+  Chip,
+  Divider,
+  Drawer,
+  Grid,
+} from "@mui/material";
+import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import WorkIcon from "@mui/icons-material/Work";
+import SchoolIcon from "@mui/icons-material/School";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import { ReactSession } from "react-client-session";
+import api from "../../utils/api";
+import { orgId } from "../../configs/app";
+import Loading from "../parts/loading";
+
+// Helper for Thai days
+const dayMap = {
+  monday: "จันทร์",
+  tuesday: "อังคาร",
+  wednesday: "พุธ",
+  thursday: "พฤหัสบดี",
+  friday: "ศุกร์",
+  saturday: "เสาร์",
+  sunday: "อาทิตย์",
+};
+
+const dayColorMap = {
+  monday: "#FFD700", // Yellow
+  tuesday: "#FF69B4", // Pink
+  wednesday: "#008000", // Green
+  thursday: "#FF8C00", // Orange
+  friday: "#00BFFF", // Blue
+  saturday: "#800080", // Purple
+  sunday: "#FF0000", // Red
+};
+
 export function AppointmentPage() {
-    const [specialistId] = useState(useParams().expertID);
-    const navigate = useNavigate();
-    const [user, setUser] = useState(ReactSession.get('user'));
-    const [bookingTime, setBookingTime] = React.useState(dayjs().add(3, 'hour'));
-    const [bookingDate, setBookingDate] = React.useState(dayjs());
-    const [isDrawerOpen, setDrawerOpen] = useState(false);
-    const [isBookable, setIsBookable] = useState(1);
-    const [loading, setLoading] = React.useState(true);
-    const [specialist, setSpecialist] = useState({
-        "id": 0,
-        "prefix": "",
-        "type_name": "",
-        "firstname": "",
-        "lastname": "",
-        "nick_name": "",
-        "profile_pic_file_name": "",
-        "education_record": "",
-        "work_history": "",
-        "schedule_appointments": "",
-        "topics_json": []
-    });
+  const { expertID: specialistId } = useParams();
+  const navigate = useNavigate();
+  const [user] = useState(ReactSession.get("user"));
+  const [loading, setLoading] = useState(true);
+  const [specialist, setSpecialist] = useState(null);
 
-    useEffect(() => {
+  // Booking State
+  const [bookingDate, setBookingDate] = useState(dayjs());
+  const [bookingTime, setBookingTime] = useState(
+    dayjs().add(1, "hour").startOf("hour"),
+  );
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
 
-        if(!user.birthday || user.birthday === '') {
-            navigate('/form', { state: { sid: specialistId } });
-        }
-        
-        getSpecialist();
-
-    }, [specialistId]);
-    // get api of specialist by id
-    const getSpecialist = async () => {
-        if (!specialistId) return
-        try{
-            let res = await axios.get(apiUrl + '/api/specialist/' + specialistId);
-            let newdata = {
-                "id": res.data.data.id,
-                "prefix": res.data.data.prefix === null ? "" : res.data.data.prefix,
-                "firstname": res.data.data.firstname === null ? "" : res.data.data.firstname,
-                "lastname": res.data.data.lastname === null ? "" : res.data.data.lastname,
-                "nick_name": res.data.data.nick_name === null ? "" : res.data.data.nick_name,
-                "type_name": res.data.data.type_name === null ? "" : res.data.data.type_name,
-                "profile_pic_file_name": res.data.data.profile_pic_file_name === null ? "" : res.data.data.profile_pic_file_name,
-                "education_record": res.data.data.education_record === null ? "" : res.data.data.education_record,
-                "work_history": res.data.data.work_history === null ? "" : res.data.data.work_history,
-                "schedule_appointments": res.data.data.schedule_appointments === null ? "" : res.data.data.schedule_appointments,
-                "topics_json": res.data.data.topics_json,
-                "is_active": (!Number(res.data.data.is_active)) ? 1 : 0
-            }
-            
-            setIsBookable(newdata.is_active);
-            setSpecialist(newdata);
-            setLoading(false);
-        } catch (error) {
-            console.error(error);
-        }
+  useEffect(() => {
+    if (!user?.birthday) {
+      navigate("/form", { state: { sid: specialistId } });
+      return;
     }
+    fetchSpecialistData();
+  }, [specialistId, user, navigate]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if(!specialistId) return;
-        const submit_data = {
-            organization_id: orgId,
-            user_id: user.id,
-            specialist_id: specialistId,
-            appointment_date: bookingDate.format('YYYY-MM-DD'),
-            appointment_time: bookingTime.format('HH:mm')
+  const fetchSpecialistData = async () => {
+    try {
+      const response = await api.get(`/api/specialist/${specialistId}`);
+      const data = response.data?.data;
+
+      let parsedSchedule = null;
+      try {
+        if (data.schedule_appointments) {
+          parsedSchedule = JSON.parse(data.schedule_appointments);
         }
-        let res = await axios.post( apiUrl + '/api/appointment', submit_data );
-        navigate('/confirm', { booking: { specialistId, bookingDate, bookingTime } });
-    };
+      } catch (e) {
+        console.error("Failed to parse schedule:", e);
+      }
 
+      setSpecialist({
+        ...data,
+        schedule: parsedSchedule,
+      });
+    } catch (error) {
+      console.error("Error fetching specialist:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBookAppointment = async () => {
+    try {
+      const submitData = {
+        organization_id: orgId,
+        user_id: user.id,
+        specialist_id: specialistId,
+        appointment_date: bookingDate.format("YYYY-MM-DD"),
+        appointment_time: bookingTime.format("HH:mm"),
+      };
+
+      await api.post("/api/appointment", submitData);
+      setDrawerOpen(false);
+      navigate("/confirm", {
+        state: {
+          booking: {
+            specialistId,
+            bookingDate,
+            bookingTime,
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Booking failed:", error);
+      // Ensure error handling or alert here
+    }
+  };
+
+  const SectionHeader = ({ icon, title }) => (
+    <Stack direction="row" spacing={1} alignItems="center" mb={2} mt={1}>
+      <Box
+        sx={{
+          backgroundColor: "#EFE9F5",
+          borderRadius: "50%",
+          p: 0.8,
+          display: "flex",
+        }}
+      >
+        {icon}
+      </Box>
+      <Typography
+        className="NotoSansThai"
+        sx={{ fontWeight: 700, fontSize: "16px", color: "#333" }}
+      >
+        {title}
+      </Typography>
+    </Stack>
+  );
+
+  const InfoList = ({ text }) => {
+    if (!text) return null;
+    const items = text.split("\n").filter((i) => i.trim() !== "");
     return (
-        <Box sx={{ backgroundColor: '#F6F6F6' }}>
-            {loading ? <Loading /> : null}
-            <AppBar position="relative" sx={{ backgroundColor: '#FFF', color: '#000', boxShadow: 'unset', paddingTop: '10px' }}>
-                <Toolbar>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 2, position: "absolute" }}
-                        component={Link} to="/home"
-                    >
-                        <ArrowBackIosNewOutlinedIcon />
-                    </IconButton>
-                    <Typography className='NotoSansThai' component="div" sx={{ flexGrow: 1, textAlign: 'center', fontWeight: 600, fontSize: 18 }}>
-                        รายละเอียดการจอง
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <Box sx={{ p: 4, backgroundColor: '#FFF' }} mb={2} >
-                <Typography className='NotoSansThai' mb={2} component="div" sx={{ fontWeight: 600, fontSize: 18 }}>
-                    ผู้เชี่ยวชาญ
-                </Typography>
-
-
-                <Stack spacing={2} mb={3} direction="row" alignItems="center">
-                    <Avatar
-                        alt=""
-                        src={specialist.profile_pic_file_name}
-                        sx={{ width: 64, height: 64 }}
-                    />
-                    <div>
-                        <Typography className='NotoSansThai' mb={1} component="div" sx={{ fontWeight: 600, fontSize: 16, color: '#2C2C2C' }}>
-                            {specialist.prefix + specialist.firstname} {specialist.lastname}
-                        </Typography>
-                        <Typography  className='NotoSansThai'  component="div"  sx={{ fontSize:13,color:"#656565" }}>
-                            {specialist.type_name}
-                        </Typography>
-                    </div>
-                </Stack>
-                <Button
-                    variant="contained"
-                    type="submit"
-                    fullWidth
-                    className='NotoSansThai'
-                    sx={{
-                        borderRadius: 50,
-                        backgroundColor: '#461E99',
-                        padding: '16px 32px',
-                        fontSize: '16px',
-                    }}
-                    disabled={isBookable}
-                    onClick={() => setDrawerOpen(true)}
-                >ปรึกษา </Button>
-            </Box>
-
-            <Box sx={{ p: 4, backgroundColor: '#FFF' }} mb={2} >
-                <Typography className='NotoSansThai' mb={2} component="div" sx={{ fontWeight: 600, fontSize: 18 }}>
-                    ประวัติการศึกษา
-                </Typography>
-                <Typography>
-                    <ul>
-                    {
-                        specialist.education_record.split('\n').map((item, i) => (
-                            <li key={i}>{item.replace('-', '')}</li>
-                        ))
-                    }
-                    </ul>
-                </Typography>
-            </Box>
-
-            <Box sx={{ p: 4, backgroundColor: '#FFF' }} mb={2} >
-                <Typography className='NotoSansThai' mb={2} component="div" sx={{ fontWeight: 600, fontSize: 18 }}>
-                    ประวัติการทำงาน
-                </Typography>
-                <Typography>
-                    <ul>
-                    {
-                        specialist.work_history.split('\n').map((item, i) => (
-                            <li key={i}>{item.replace('-', '')}</li>
-                        ))
-                    }
-                    </ul>
-                </Typography>
-            </Box>
-
-            <Box sx={{ px: 4, backgroundColor: '#FFF' }} pb={6} pt={4} >
-                <Typography className='NotoSansThai' mb={2} component="div" sx={{ fontWeight: 600, fontSize: 18 }}>
-                    ตารางเวลาสำหรับนัดหมายล่วงหน้า
-                </Typography>
-
-                <Typography sx={{ mb: 3 }} className='NotoSansThai'>
-                    <ul>
-                        {
-                            specialist.schedule_appointments.split('\n').map((item, i) => (
-                                <li key={i}>{item.replace('-', '')}</li>
-                            ))
-                        }
-                    </ul>
-                </Typography>
-                
-                <Button
-                    variant="contained"
-                    type="submit"
-                    fullWidth
-                    className='NotoSansThai'
-                    disabled={isBookable}
-                    sx={{
-                        borderRadius: 50,
-                        backgroundColor: '#461E99',
-                        padding: '16px 32px',
-                        fontSize: '16px',
-                    }}
-                    onClick={() => setDrawerOpen(true)}
-                >ปรึกษา </Button>
-            </Box>
-            <Drawer
-                anchor="bottom"
-                open={isDrawerOpen}
-                onClose={() => setDrawerOpen(false)}
+      <Box sx={{ pl: 1 }}>
+        {items.map((item, index) => (
+          <Stack
+            key={index}
+            direction="row"
+            spacing={1}
+            alignItems="start"
+            mb={1}
+          >
+            <Box
+              sx={{
+                minWidth: "6px",
+                height: "6px",
+                borderRadius: "50%",
+                backgroundColor: "#461E99",
+                marginTop: "10px !important",
+              }}
+            />
+            <Typography
+              className="NotoSansThai"
+              sx={{ fontSize: "14px", color: "#555", lineHeight: 1.6 }}
             >
-                <Box className="bxbot" >
-                    <Box p={4} >
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DateCalendar sx={{
-                                width: '100%',
-                                mb: 1
-                            }}
-                                value={bookingDate}
-                                disablePast
-                                onChange={(bookingDate) => setBookingDate(bookingDate)}
-                            />
-                        </LocalizationProvider>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <Box components={['TimePicker']}>
-                                <TimePicker label="เวลา" sx={{ width: '100%' }}
-                                    value={bookingTime}
-                                    minutesStep={30}
-                                    ampm={false}
-                                    onChange={(bookingTime) => setBookingTime(bookingTime)} />
-                            </Box>
-                        </LocalizationProvider>
-                        <Box pt={4}>
-                            <Button
-                                variant="contained"
-                                type="submit"
-                                onClick={handleSubmit}
-                                fullWidth
-                                className='NotoSansThai'
-                                sx={{
-                                    borderRadius: 50,
-                                    backgroundColor: '#461E99',
-                                    padding: '14px 32px',
-                                    fontSize: '16px',
-                                }}
-                            >ยืนยันการนัดหมาย</Button>
-                        </Box>
-                    </Box>
-                </Box>
-            </Drawer>
-
-
-        </Box>
+              {item.replace(/^-/, "").trim()}
+            </Typography>
+          </Stack>
+        ))}
+      </Box>
     );
+  };
+
+  if (loading) return <Loading />;
+  if (!specialist)
+    return (
+      <Box p={4}>
+        <Typography>Specialist not found</Typography>
+      </Box>
+    );
+
+  return (
+    <Box sx={{ backgroundColor: "#F6F6F6", minHeight: "100vh", pb: 10 }}>
+      {/* App Bar */}
+      <AppBar
+        position="sticky"
+        elevation={0}
+        sx={{
+          backgroundColor: "#FFF",
+          color: "#000",
+          borderBottom: "1px solid #F0F0F0",
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            onClick={() => navigate(-1)}
+            sx={{ mr: 2 }}
+          >
+            <ArrowBackIosNewOutlinedIcon />
+          </IconButton>
+          <Typography
+            className="NotoSansThai"
+            sx={{
+              flexGrow: 1,
+              textAlign: "center",
+              fontWeight: 700,
+              fontSize: "18px",
+              mr: 5, // offset for back button to center title
+            }}
+          >
+            รายละเอียดผู้เชี่ยวชาญ
+          </Typography>
+        </Toolbar>
+      </AppBar>
+
+      <Container maxWidth="sm" sx={{ p: 2 }}>
+        {/* Profile Header */}
+        <Card
+          sx={{
+            borderRadius: "20px",
+            boxShadow: "0px 4px 20px rgba(0,0,0,0.05)",
+            mb: 2,
+            overflow: "visible",
+          }}
+        >
+          <CardContent sx={{ p: 3, textAlign: "center" }}>
+            <Avatar
+              src={specialist.profile_pic_file_name}
+              sx={{
+                width: 100,
+                height: 100,
+                margin: "0 auto",
+                mb: 2,
+                border: "4px solid #fff",
+                boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+              }}
+            />
+            <Typography
+              className="NotoSansThai"
+              sx={{ fontWeight: 700, fontSize: "18px", color: "#333" }}
+            >
+              {specialist.prefix} {specialist.firstname} {specialist.lastname}
+            </Typography>
+            <Typography
+              className="NotoSansThai"
+              sx={{ fontSize: "14px", color: "#666", mb: 2 }}
+            >
+              {specialist.type_name}
+            </Typography>
+
+            {/* Topics */}
+            <Stack
+              direction="row"
+              spacing={1}
+              justifyContent="center"
+              flexWrap="wrap"
+              useFlexGap
+              sx={{ mt: 2 }}
+            >
+              {specialist.topics_json?.map((topic, i) => {
+                // Check if topic is object (new format) or just ID string (old format fallback)
+                // The user provided full response data shows objects.
+                if (typeof topic === "object" && topic !== null) {
+                  return (
+                    <Chip
+                      key={topic.id || i}
+                      label={topic.name}
+                      avatar={
+                        <Avatar alt={topic.name} src={topic.icon_file_name} />
+                      }
+                      variant="outlined"
+                      sx={{
+                        fontFamily: "Noto Sans Thai",
+                        backgroundColor: "#FAFAFA",
+                        borderColor: "#EEE",
+                        height: "36px",
+                        "& .MuiChip-label": {
+                          fontSize: "13px",
+                          color: "#444",
+                          fontWeight: 500,
+                        },
+                        "& .MuiChip-avatar": {
+                          width: 24,
+                          height: 24,
+                        },
+                      }}
+                    />
+                  );
+                }
+                return null;
+              })}
+            </Stack>
+
+            {specialist.is_active === 1 && (
+              <Chip
+                icon={<CheckCircleIcon sx={{ fontSize: "16px !important" }} />}
+                label="พร้อมให้บริการ"
+                color="success"
+                size="small"
+                sx={{
+                  mt: 1,
+                  fontFamily: "NotoSansThai",
+                  fontWeight: 600,
+                  bgcolor: "#E8F5E9",
+                  color: "#2E7D32",
+                }}
+              />
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Education & Work */}
+        <Card
+          sx={{
+            borderRadius: "16px",
+            boxShadow: "0px 2px 10px rgba(0,0,0,0.03)",
+            mb: 2,
+          }}
+        >
+          <CardContent sx={{ p: 3 }}>
+            <SectionHeader
+              icon={<SchoolIcon sx={{ color: "#461E99", fontSize: 20 }} />}
+              title="ประวัติการศึกษา"
+            />
+            <InfoList text={specialist.education_record} />
+
+            <Divider sx={{ my: 3, borderStyle: "dashed" }} />
+
+            <SectionHeader
+              icon={<WorkIcon sx={{ color: "#461E99", fontSize: 20 }} />}
+              title="ประวัติการทำงาน"
+            />
+            <InfoList text={specialist.work_history} />
+          </CardContent>
+        </Card>
+
+        {/* Schedule */}
+        <Card
+          sx={{
+            borderRadius: "16px",
+            boxShadow: "0px 2px 10px rgba(0,0,0,0.03)",
+            mb: 10,
+          }}
+        >
+          <CardContent sx={{ p: 3 }}>
+            <SectionHeader
+              icon={
+                <CalendarMonthIcon sx={{ color: "#461E99", fontSize: 20 }} />
+              }
+              title="ตารางเวลาออกตรวจ"
+            />
+            {specialist.schedule?.weekly && (
+              <Grid container spacing={1} sx={{ mt: 1 }}>
+                {Object.entries(specialist.schedule.weekly).map(
+                  ([dayKey, slot]) => {
+                    if (!slot.active) return null;
+                    return (
+                      <Grid item xs={12} key={dayKey}>
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          sx={{
+                            p: 1.5,
+                            borderRadius: "10px",
+                            backgroundColor: "#FAFAFA",
+                            border: "1px solid #F0F0F0",
+                          }}
+                        >
+                          <Stack
+                            direction="row"
+                            spacing={1.5}
+                            alignItems="center"
+                          >
+                            <Box
+                              sx={{
+                                width: 10,
+                                height: 10,
+                                borderRadius: "50%",
+                                bgcolor: dayColorMap[dayKey],
+                              }}
+                            />
+                            <Typography
+                              className="NotoSansThai"
+                              sx={{
+                                fontWeight: 600,
+                                fontSize: "14px",
+                                color: "#333",
+                              }}
+                            >
+                              {dayMap[dayKey]}
+                            </Typography>
+                          </Stack>
+                          <Typography
+                            className="NotoSansThai"
+                            sx={{ fontSize: "14px", color: "#666" }}
+                          >
+                            {slot.start} - {slot.end}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                    );
+                  },
+                )}
+              </Grid>
+            )}
+          </CardContent>
+        </Card>
+      </Container>
+
+      {/* Floating Action Button / Bottom Bar */}
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          p: 2,
+          backgroundColor: "#fff",
+          boxShadow: "0 -4px 20px rgba(0,0,0,0.1)",
+          zIndex: 100,
+        }}
+      >
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={() => setDrawerOpen(true)}
+          disabled={specialist.is_active === 0}
+          className="NotoSansThai"
+          sx={{
+            borderRadius: "50px",
+            backgroundColor: "#461E99",
+            padding: "14px",
+            fontSize: "16px",
+            fontWeight: 600,
+            boxShadow: "0 4px 15px rgba(70, 30, 153, 0.3)",
+            "&:disabled": {
+              backgroundColor: "#CCC",
+            },
+          }}
+        >
+          {specialist.is_active === 1
+            ? "จองนัดหมายปรึกษา"
+            : "ไม่พร้อมให้บริการ"}
+        </Button>
+      </Box>
+
+      {/* Booking Drawer */}
+      <Drawer
+        anchor="bottom"
+        open={isDrawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        PaperProps={{
+          sx: {
+            borderTopLeftRadius: "32px",
+            borderTopRightRadius: "32px",
+            background: "#fff",
+          },
+        }}
+      >
+        <Box sx={{ p: 4, pb: 6 }}>
+          <Stack direction="row" justifyContent="center" mb={1}>
+            <Box
+              sx={{
+                width: 60,
+                height: 6,
+                bgcolor: "#E0E0E0",
+                borderRadius: "3px",
+              }}
+            />
+          </Stack>
+
+          <Typography
+            className="NotoSansThai"
+            sx={{
+              fontWeight: 700,
+              fontSize: "20px",
+              my: 3,
+              textAlign: "center",
+              color: "#333",
+            }}
+          >
+            เลือกวันและเวลาที่สะดวก
+          </Typography>
+
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="th">
+            <Box
+              sx={{
+                bgcolor: "#F9F9F9",
+                borderRadius: "24px",
+                p: 2,
+                mb: 3,
+                "& .MuiPickersDay-root.Mui-selected": {
+                  backgroundColor: "#461E99 !important",
+                },
+                "& .MuiPickersDay-root:focus.Mui-selected": {
+                  backgroundColor: "#461E99 !important",
+                },
+                "& .MuiPickersYear-yearButton.Mui-selected": {
+                  backgroundColor: "#461E99 !important",
+                  color: "#fff",
+                },
+              }}
+            >
+              <DateCalendar
+                value={bookingDate}
+                onChange={(newValue) => setBookingDate(newValue)}
+                disablePast
+                views={["year", "month", "day"]}
+                sx={{ width: "100%" }}
+              />
+            </Box>
+
+            <Typography
+              className="NotoSansThai"
+              sx={{ fontWeight: 600, fontSize: "16px", mb: 2, ml: 1 }}
+            >
+              เลือกเวลา
+            </Typography>
+
+            <TimePicker
+              value={bookingTime}
+              onChange={(newValue) => setBookingTime(newValue)}
+              minutesStep={30}
+              ampm={false}
+              sx={{ width: "100%", mb: 4 }}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  variant: "outlined",
+                  InputProps: {
+                    sx: {
+                      borderRadius: "16px",
+                      backgroundColor: "#FFF",
+                      border: "1px solid #E0E0E0",
+                      fontFamily: "NotoSansThai",
+                      fontSize: "16px",
+                      height: "56px",
+                      "&:hover": {
+                        borderColor: "#461E99",
+                      },
+                      "&.Mui-focused": {
+                        borderColor: "#461E99",
+                        boxShadow: "0 0 0 2px rgba(70, 30, 153, 0.1)",
+                      },
+                    },
+                  },
+                },
+              }}
+            />
+          </LocalizationProvider>
+
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={handleBookAppointment}
+            className="NotoSansThai"
+            sx={{
+              borderRadius: "50px",
+              backgroundColor: "#461E99",
+              padding: "16px",
+              fontSize: "18px",
+              fontWeight: 600,
+              boxShadow: "0 8px 20px rgba(70, 30, 153, 0.3)",
+              transition: "transform 0.2s",
+              "&:active": {
+                transform: "scale(0.98)",
+              },
+            }}
+          >
+            ยืนยันการนัดหมาย
+          </Button>
+        </Box>
+      </Drawer>
+    </Box>
+  );
 }

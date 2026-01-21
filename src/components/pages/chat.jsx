@@ -1,63 +1,30 @@
-import React, {useEffect, useState} from 'react'
-import { cs_token, cs_url, cs_identifier, cs_hmac_secret } from '../../configs/app';
-import { ReactSession } from 'react-client-session';
+import React, { useEffect } from "react";
+import { apiUrl } from "../../configs/app";
+import { ReactSession } from "react-client-session";
 
-export default function Chat (props) {
-  const {chatMsg} = props;
-  const [user, setUser] = useState(ReactSession.get('user'));
+export default function Chat(props) {
+  const user = ReactSession.get("user");
 
   useEffect(() => {
-    window.chatwootSettings = {
-      hideMessageBubble: props.disabled || false,
-      position: "right", 
-      locale: "th", 
-      type: "expanded_bubble",
-      launcherTitle: "ถาม Synz",
-    };
+    // 1. Set User Identity if available
+    if (user && user.id) {
+      localStorage.setItem("synz_user_id", user.id);
+    }
 
-    (function(d,t) {
-      var BASE_URL = cs_url;
-      var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
-      g.src = BASE_URL + "/packs/js/sdk.js";
-      g.defer = true;
-      g.async = true;
-      s.parentNode.insertBefore(g, s);
+    // 2. Inject Widget Script
+    // Check if script already exists to prevent duplicate injection
+    const existingScript = document.querySelector(
+      `script[src="${apiUrl}/synz-chat-widget.js"]`,
+    );
 
-      g.onload = async function() {
+    if (!existingScript) {
+      const script = document.createElement("script");
+      script.src = `${apiUrl}/synz-chat-widget.js`;
+      script.dataset.baseUrl = apiUrl; // data-base-url
+      script.async = true;
+      document.body.appendChild(script); // Usually body is safer for widgets
+    }
+  }, [user]);
 
-        await window.chatwootSDK.run({
-          websiteToken: cs_token,
-          baseUrl: BASE_URL
-        });
-
-        if(!user||props.disabled) {
-          await window.$chatwoot.toggleBubbleVisibility('hide');
-          return () => {}
-        } else {
-          await setUser(ReactSession.get('user'));
-          await window.$chatwoot.toggleBubbleVisibility('show');
-        }
-
-        const user_info = {
-          name: user.firstname + " " + user.lastname,
-          email: user.email,
-          phone_number: "+66"+user.phone_number,
-          country_code: "TH",
-          company_name: "EGAT-"+user.attribute_1+"-"+user.attribute_2
-        }
-
-        await window.$chatwoot.setUser(user.id, user_info);
-        await window.$chatwoot.setLabel("support-ticket");
-        await window.$chatwoot.setConversationCustomAttributes({
-            productName: "Mobile number",
-            productCategory: "+66"+user.phone_number,
-          });
-        
-      }
-    })(document, "script");
-  }, []);
-
-
-
-  return null;
-};
+  return null; // Widget renders itself via script
+}

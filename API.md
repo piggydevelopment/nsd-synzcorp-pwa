@@ -1,25 +1,35 @@
 # API Specification
 
+## API Base URL
+All API endpoints are prefixed with `https://admin.synzofficial.com/api`.
+
 ## Indexes
-- [Authentication](#authentication)
-  - [Request OTP](#request-otp)
-  - [Verify OTP](#verify-otp)
-  - [Create User / Login](#create-user--login)
-- [User Management](#user-management)
-  - [Get User Information](#get-user-information)
-  - [Update User Information](#update-user-information)
-  - [Update Treatment Information](#update-treatment-information)
-- [Content](#content)
-  - [Get Banners](#get-banners)
-  - [Get Specialists by Type](#get-specialists-by-type)
-  - [Get Specialist Detail](#get-specialist-detail)
-- [Appointment & Meeting](#appointment--meeting)
-  - [Create Appointment](#create-appointment)
-  - [Get User Appointments](#get-user-appointments)
-  - [Start Meeting (Tracker)](#start-meeting-tracker)
-  - [End Meeting (Tracker)](#end-meeting-tracker)
-- [Evaluation](#evaluation)
-  - [Submit Evaluation](#submit-evaluation)
+- [API Specification](#api-specification)
+  - [API Base URL](#api-base-url)
+  - [Indexes](#indexes)
+  - [Authentication](#authentication)
+    - [Request OTP](#request-otp)
+    - [Verify OTP](#verify-otp)
+    - [Create User / Login](#create-user--login)
+  - [Protected Endpoints](#protected-endpoints)
+  - [Public Endpoints](#public-endpoints)
+  - [Multi-Organization Support](#multi-organization-support)
+  - [User Management](#user-management)
+    - [Get User Information](#get-user-information)
+    - [Update User Information](#update-user-information)
+    - [Update Treatment Information](#update-treatment-information)
+  - [Content](#content)
+    - [Get Banners](#get-banners)
+    - [Get Specialists by Type](#get-specialists-by-type)
+    - [Get Specialist Detail](#get-specialist-detail)
+  - [Appointment \& Meeting](#appointment--meeting)
+    - [Create Appointment](#create-appointment)
+    - [Get User Appointments](#get-user-appointments)
+    - [Start Meeting (Tracker)](#start-meeting-tracker)
+    - [End Meeting (Tracker)](#end-meeting-tracker)
+  - [Evaluation](#evaluation)
+    - [Submit Evaluation](#submit-evaluation)
+  - [API Summary Table](#api-summary-table)
 
 ## Authentication
 
@@ -56,10 +66,14 @@
   }
   ```
 - **Response**:
+  > [!IMPORTANT]
+  > The response contains a `token`. **Store this token** (e.g., localStorage) for subsequent requests.
+
   ```json
   {
     "status": 200,
-    "message": "success"
+    "message": "success",
+    "token": "eyJhbGciOiJIUzI1NiIsInR..."
   }
   ```
 
@@ -67,6 +81,8 @@
 - **URL**: `/api/user`
 - **Method**: `POST`
 - **Description**: Create a new user or retrieve existing user session after OTP verification.
+- **Headers**:
+  - `Authorization`: `Bearer <your_token>`
 - **Request Data**:
   ```json
   {
@@ -89,6 +105,32 @@
     }
   }
   ```
+
+
+## Protected Endpoints
+
+All endpoints affecting specific users require the `Authorization` header.
+
+- `POST /api/user`
+- `GET /api/user/:id`
+- `PUT /api/user/:id`
+- `POST /api/user/treatment-information/:id`
+- `POST /api/appointment`
+- `GET /api/appointment/:user_id`
+
+## Public Endpoints
+
+The following do not typically require a user token.
+
+- `GET /api/banners`
+- `GET /api/specialist/type/:type`
+- `GET /api/specialist/:id`
+
+## Multi-Organization Support
+
+The system supports multiple organizations.
+- When calling `POST /api/user` for a new user, you must provide `organization_id`.
+- The user's organization is then bound to their profile.
 
 ## User Management
 

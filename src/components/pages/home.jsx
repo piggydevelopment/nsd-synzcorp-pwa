@@ -292,11 +292,12 @@ export function HomePage() {
       )}
 
       {specialistTypes.map((type) =>
-        specialists[type.id] && specialists[type.id].length > 0 ? (
+        specialists[type.specialist_type_id] &&
+        specialists[type.specialist_type_id].length > 0 ? (
           <Specialist
-            key={type.id}
+            key={type.specialist_type_id}
             type={type.name}
-            data={specialists[type.id]}
+            data={specialists[type.specialist_type_id]}
           />
         ) : null,
       )}

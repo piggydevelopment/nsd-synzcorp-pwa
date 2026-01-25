@@ -51,7 +51,7 @@ export function HomePage() {
       await getBanners();
       await getKnowledges();
       for (const type of specialistTypes) {
-        await getSpecialist(type.id);
+        await getSpecialist(type.specialist_type_id);
       }
     }
     setIsLoading(false);
@@ -102,7 +102,7 @@ export function HomePage() {
     await getBanners();
     await getKnowledges();
     for (const type of newTypes) {
-      await getSpecialist(type.id);
+      await getSpecialist(type.specialist_type_id);
     }
 
     setIsLoading(false);

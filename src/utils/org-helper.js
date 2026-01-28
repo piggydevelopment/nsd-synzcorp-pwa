@@ -9,7 +9,7 @@ export const getOrganizationIdFromUrl = () => {
 
   // Ignore localhost and IP addresses
   if (hostname === "localhost" || hostname === "127.0.0.1") {
-    return null;
+    return "egat2";
   }
 
   const parts = hostname.split(".");

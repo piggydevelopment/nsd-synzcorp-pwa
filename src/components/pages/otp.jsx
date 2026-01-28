@@ -41,7 +41,7 @@ export function OtpPage() {
     setOtp(newValue);
   };
 
-  const requestOTP = async () => {
+  const requestOTP = async (forceResend = false) => {
     await setIsLoading(true);
     await setOtp("");
     await setValidate(true);
@@ -50,7 +50,7 @@ export function OtpPage() {
     setEmail(tempUser);
 
     let Ref = localStorage.getItem("ref") || "";
-    if (Ref !== "") {
+    if (Ref !== "" && forceResend !== true) {
       await setRef(Ref);
       setIsLoading(false);
       return;
@@ -220,11 +220,9 @@ export function OtpPage() {
               textDecoration: "underline",
               color: "#461E99",
             }}
+            onClick={() => requestOTP(true)}
           >
-            <Link sx={{ mr: 2 }} onClick={requestOTP}>
-              {" "}
-              ส่งรหัสยืนยันอีกครั้ง{" "}
-            </Link>
+            ส่งรหัสยืนยันอีกครั้ง
           </Button>
         </div>
 

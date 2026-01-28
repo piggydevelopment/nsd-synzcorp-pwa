@@ -9,6 +9,7 @@ import { BrowserRouter as Router, useNavigate } from "react-router-dom";
 import { ReactSession } from "react-client-session";
 import Alert from "@mui/material/Alert";
 import Chat from "./chat";
+import { getOrganizationIdFromUrl } from "../../utils/org-helper";
 export function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -33,6 +34,19 @@ export function LoginPage() {
    * @return {boolean} true if the email value is valid and not a public domain, false otherwise
    */
   const validate = (email_value) => {
+    const orgId = getOrganizationIdFromUrl();
+
+    if (orgId === "egat" || orgId === "egat2") {
+      const pattern = /^[56]\d{5}@egat\.co\.th$/;
+      if (pattern.test(email_value)) {
+        setError(false);
+        return true;
+      } else {
+        setError(true);
+        return false;
+      }
+    }
+
     const publicDomains = [
       "gmail.com",
       "outlook.com",

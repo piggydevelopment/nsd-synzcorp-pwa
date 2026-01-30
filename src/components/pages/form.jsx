@@ -69,11 +69,8 @@ export const FormPage = () => {
     event.preventDefault();
 
     try {
-      let update_data = await api.post(
-        `/api/user/treatment-information/${user.id}`,
-        formData,
-      );
-      await ReactSession.set("user", update_data.data.data);
+      await api.post(`/api/user/treatment-information/${user.id}`, formData);
+      await ReactSession.set("user", { ...user, ...formData });
       if (typeof location.state === "undefined" || location.state === null) {
         navigate(-1);
       } else {

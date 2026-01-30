@@ -27,6 +27,8 @@ export function AccountPage() {
         email: "",
         phone_number: "",
         attribute_1: "",
+        attribute_2: "",
+        age_range: "",
       },
   );
   const navigate = useNavigate();
@@ -81,20 +83,29 @@ export function AccountPage() {
     setOpen(true);
   };
 
-  const handleLogout = async () => {
-    if (window.confirm("Are you sure you want to exit?")) {
-      await ReactSession.remove("user");
-      await localStorage.removeItem("user");
-      await localStorage.removeItem("specialist_type_1");
-      await localStorage.removeItem("specialist_type_2");
-      await localStorage.removeItem("banners");
-      await localStorage.removeItem("email");
-      await localStorage.removeItem("ref");
-      await localStorage.removeItem("last_update");
-      // await window.$chatwoot.reset();
-      // await window.$chatwoot.toggleBubbleVisibility("hide");
-      navigate("/login");
-    }
+  const [openLogout, setOpenLogout] = React.useState(false);
+
+  const handleLogoutClick = () => {
+    setOpenLogout(true);
+  };
+
+  const handleLogoutClose = () => {
+    setOpenLogout(false);
+  };
+
+  const performLogout = async () => {
+    setOpenLogout(false);
+    await ReactSession.remove("user");
+    await localStorage.removeItem("user");
+    await localStorage.removeItem("specialist_type_1");
+    await localStorage.removeItem("specialist_type_2");
+    await localStorage.removeItem("banners");
+    await localStorage.removeItem("email");
+    await localStorage.removeItem("ref");
+    await localStorage.removeItem("last_update");
+    // await window.$chatwoot.reset();
+    // await window.$chatwoot.toggleBubbleVisibility("hide");
+    navigate("/login");
   };
   return (
     <Box sx={{ backgroundColor: "#FFF", paddingBottom: "80px" }}>
@@ -135,6 +146,23 @@ export function AccountPage() {
             }}
           />
 
+          <FormControl variant="standard" fullWidth>
+            <InputLabel id="age-range-label">ช่วงอายุ</InputLabel>
+            <Select
+              labelId="age-range-label"
+              id="age-range-select"
+              value={user.age_range || ""}
+              onChange={(e) => setUser({ ...user, age_range: e.target.value })}
+              label="ช่วงอายุ"
+            >
+              {["20-30", "31-40", "41-50", "51-60"].map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
           <TextField
             label="องค์กร"
             variant="standard"
@@ -146,7 +174,7 @@ export function AccountPage() {
           />
 
           <FormControl variant="standard" fullWidth>
-            <InputLabel id="segment-label">แผนก / สังกัด</InputLabel>
+            <InputLabel id="segment-label">แผนก/สังกัด</InputLabel>
             <Select
               labelId="segment-label"
               id="segment-select"
@@ -154,7 +182,7 @@ export function AccountPage() {
               onChange={(e) =>
                 setUser({ ...user, attribute_2: e.target.value })
               }
-              label="แผนก / สังกัด"
+              label="แผนก/สังกัด"
             >
               {JSON.parse(
                 localStorage.getItem("organization_settings"),
@@ -164,6 +192,34 @@ export function AccountPage() {
                 </MenuItem>
               )) || (
                 <MenuItem value={user.attribute_2}>{user.attribute_2}</MenuItem>
+              )}
+            </Select>
+          </FormControl>
+
+          <FormControl variant="standard" fullWidth>
+            <InputLabel id="work-location-label">สถานที่ปฏิบัติงาน</InputLabel>
+            <Select
+              labelId="work-location-label"
+              id="work-location-select"
+              value={user.attribute_1 || ""}
+              onChange={(e) =>
+                setUser({ ...user, attribute_1: e.target.value })
+              }
+              label="สถานที่ปฏิบัติงาน"
+            >
+              {JSON.parse(
+                localStorage.getItem("organization_settings"),
+              )?.organization_locations?.map(
+                (location) => (
+                  <MenuItem
+                    key={location.id || location.name}
+                    value={location.name}
+                  >
+                    {location.name}
+                  </MenuItem>
+                ),
+              ) || (
+                <MenuItem value={user.attribute_1}>{user.attribute_1}</MenuItem>
               )}
             </Select>
           </FormControl>
@@ -232,7 +288,7 @@ export function AccountPage() {
                 color: "#656565",
                 boxShadow: "unset",
               }}
-              onClick={handleLogout}
+              onClick={handleLogoutClick}
             >
               ออกจากระบบ{" "}
             </Button>
@@ -283,6 +339,29 @@ export function AccountPage() {
               ไม่ต้องการลบ
             </Button>
             <Button onClick={handleClose} autoFocus color="error">
+              ตกลง
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={openLogout}
+          onClose={handleLogoutClose}
+          aria-labelledby="logout-dialog-title"
+        >
+          <DialogTitle id="logout-dialog-title">
+            {"ต้องการออกจากระบบหรือไม่?"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              คุณยืนยันที่จะออกจากระบบ หรือไม่
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={handleLogoutClose} color="secondary">
+              ยกเลิก
+            </Button>
+            <Button onClick={performLogout} autoFocus color="error">
               ตกลง
             </Button>
           </DialogActions>

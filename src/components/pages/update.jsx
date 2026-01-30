@@ -111,6 +111,23 @@ export function UpdatePage() {
               shrink: true,
             }}
           />
+
+          <FormControl variant="standard" fullWidth>
+            <InputLabel id="age-range-label">ช่วงอายุ</InputLabel>
+            <Select
+              labelId="age-range-label"
+              id="age-range-select"
+              value={user.age_range || ""}
+              onChange={(e) => setUser({ ...user, age_range: e.target.value })}
+              label="ช่วงอายุ"
+            >
+              {["20-30", "31-40", "41-50", "51-60"].map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <TextField
             label="องค์กร"
             variant="standard"
@@ -139,6 +156,32 @@ export function UpdatePage() {
                 </MenuItem>
               )) || (
                 <MenuItem value={user.attribute_2}>{user.attribute_2}</MenuItem>
+              )}
+            </Select>
+          </FormControl>
+
+          <FormControl variant="standard" fullWidth>
+            <InputLabel id="work-location-label">สถานที่ปฏิบัติงาน</InputLabel>
+            <Select
+              labelId="work-location-label"
+              id="work-location-select"
+              value={user.attribute_1 || ""}
+              onChange={(e) =>
+                setUser({ ...user, attribute_1: e.target.value })
+              }
+              label="สถานที่ปฏิบัติงาน"
+            >
+              {JSON.parse(
+                localStorage.getItem("organization_settings"),
+              )?.organization_locations?.map((location) => (
+                <MenuItem
+                  key={location.id || location.name}
+                  value={location.name}
+                >
+                  {location.name}
+                </MenuItem>
+              )) || (
+                <MenuItem value={user.attribute_1}>{user.attribute_1}</MenuItem>
               )}
             </Select>
           </FormControl>

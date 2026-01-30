@@ -46,7 +46,7 @@ function App() {
 
         // Fetch organization settings
         const response = await api.get(
-          `/api/organization/data?includes=info,organization_specialist_type,segments`,
+          `/api/organization/data?includes=info,organization_specialist_type,segments,locations`,
         );
 
         if (response.data && response.data.data) {

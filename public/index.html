@@ -1,20 +1,23 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <link rel="icon" href="/icon/180.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/icon/180.png">
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#461e99" />
-  <meta name="description" content="Synz application for corporate." />
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/icon/180.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon/180.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#461e99" />
+    <meta name="description" content="Synz application for corporate." />
 
-  <!--
+    <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-  <link rel="manifest" href="/manifest.json" />
-  <!--
+    <link rel="manifest" href="/manifest.json" />
+    <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
       Only files inside the `public` folder can be referenced from the HTML.
@@ -23,33 +26,37 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-  <title>Synz Corporate</title>
-  <link rel="stylesheet" href="/pwa.css"/>
-</head>
+    <title>Synz Corporate</title>
+    <link rel="stylesheet" href="/pwa.css" />
+  </head>
 
-<body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div class="install-container" id="installInstructions">
-    <img src="/images/logo3.png" class="install-logo">
-    <h1>Synz Installation</h1>
-    <p class="instructions">เปิดด้วยเบราเซอร์ Chrome, Firefox, or Edge.</p>
-    <section class="toolbar">
-      <button id="install" class="install-button">ติดตั้งแอปพลิเคชั่น Synz</button>
-    </section>
-  </div>
-  <div id="root"></div>
-  <script src="/pwa_install.js"></script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-S4JWGTQC3B"></script>
-  <script>
-    if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/service-worker.js"); }
-    // Google Tags
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-  
-    gtag('config', 'G-S4JWGTQC3B');
-  </script>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div class="install-container" id="installInstructions">
+      <img src="/images/logo3.png" class="install-logo" />
+      <h1>Synz Installation</h1>
+      <p class="instructions">เปิดด้วยเบราเซอร์ Chrome, Firefox, or Edge.</p>
+      <section class="toolbar">
+        <button id="install" class="install-button">
+          ติดตั้งแอปพลิเคชั่น Synz
+        </button>
+      </section>
+    </div>
+    <div id="root"></div>
+    <script src="/pwa_install.js"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-S4JWGTQC3B"
+    ></script>
+    <script>
+      // Google Tags
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-</body>
-
+      gtag("config", "G-S4JWGTQC3B");
+    </script>
+  </body>
 </html>

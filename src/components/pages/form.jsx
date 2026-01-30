@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Stack from "@mui/material/Stack";
@@ -96,7 +97,17 @@ export const FormPage = () => {
 
     try {
       await api.post(`/api/user/treatment-information/${user.id}`, formData);
-      await ReactSession.set("user", { ...user, ...formData });
+      const updatedUser = { ...user, ...formData };
+      await ReactSession.set("user", updatedUser);
+
+      await Swal.fire({
+        title: "บันทึกสำเร็จ",
+        text: "ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว",
+        icon: "success",
+        confirmButtonText: "ตกลง",
+        confirmButtonColor: "#461E99",
+      });
+
       if (typeof location.state === "undefined" || location.state === null) {
         navigate(-1);
       } else {

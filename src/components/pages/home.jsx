@@ -9,6 +9,7 @@ import { Specialist } from "../parts/specialist";
 import CachedIcon from "@mui/icons-material/Cached";
 import IconButton from "@mui/material/IconButton";
 import Chat from "./chat";
+import ImageModal from "../parts/image_modal";
 export function HomePage() {
   const [banners, setBanners] = useState(
     localStorage.getItem("banners")
@@ -26,6 +27,19 @@ export function HomePage() {
   const [orgSettings, setOrgSettings] = useState(
     JSON.parse(localStorage.getItem("organization_settings")) || {},
   );
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleKnowledgeClick = (item) => {
+    setSelectedImage(item.content_url || item.image_url);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedImage(null);
+  };
 
   const navigate = useNavigate();
 
@@ -287,9 +301,16 @@ export function HomePage() {
               image_url: k.content_url,
               name: k.title,
             }))}
+            onItemClick={handleKnowledgeClick}
           />
         </Box>
       )}
+
+      <ImageModal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        imageUrl={selectedImage}
+      />
 
       {specialistTypes.map((type) =>
         specialists[type.specialist_type_id] &&

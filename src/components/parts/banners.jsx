@@ -12,6 +12,14 @@ export default function Banner(props) {
     setbanners(props.data);
   }, [props.data]);
 
+  const handleItemClick = (item) => {
+    if (props.onItemClick) {
+      props.onItemClick(item);
+    } else {
+      window.open(item.url_link, "_blank");
+    }
+  };
+
   return (
     <Box sx={{ p: 3 }}>
       <Splide
@@ -31,7 +39,8 @@ export default function Banner(props) {
         {banners.map((item, index) => (
           <SplideSlide
             key={index}
-            onClick={() => window.open(item.url_link, "_blank")}
+            onClick={() => handleItemClick(item)}
+            style={{ cursor: "pointer" }}
           >
             <img src={item.image_url} className="imgslide" alt={item.name} />
           </SplideSlide>

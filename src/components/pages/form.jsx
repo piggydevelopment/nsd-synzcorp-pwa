@@ -56,8 +56,34 @@ export const FormPage = () => {
   const getUserInfo = async () => {
     let userCurrent = await ReactSession.get("user");
     let userInfo = await api.get(`/api/user/${userCurrent.id}`);
+    const data = userInfo.data.data;
 
-    setUser(userInfo.data.data);
+    setUser(data);
+    setFormData({
+      firstname: data.firstname || "",
+      lastname: data.lastname || "",
+      occupation: data.occupation || "",
+      birthday: dayjs(data.birthday).format("YYYY-MM-DD"),
+      gender: data.gender || "",
+      idcard_number: data.idcard_number || "",
+      current_medicine: data.current_medicine || "",
+      history_treatment_household: data.history_treatment_household || "",
+      history_drug_allergy: data.history_drug_allergy || "",
+      history_food_allergy: data.history_food_allergy || "",
+      emergency_contact: data.emergency_contact || "",
+      contact_relation: data.contact_relation || "",
+      congenital_disease: data.congenital_disease || "",
+      important_symptoms: data.important_symptoms || "",
+      received_treatment: data.received_treatment || "",
+      hospital_treatment: data.hospital_treatment || "",
+      addicted_cigarettes:
+        data.addicted_cigarettes === "true" ||
+        data.addicted_cigarettes === true,
+      addicted_coffee:
+        data.addicted_coffee === "true" || data.addicted_coffee === true,
+      addicted_alcohol:
+        data.addicted_alcohol === "true" || data.addicted_alcohol === true,
+    });
   };
 
   const handleChange = (event) => {

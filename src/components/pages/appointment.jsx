@@ -56,6 +56,16 @@ const dayColorMap = {
   sunday: "#FF0000", // Red
 };
 
+const dayKeyMap = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];
+
 export function AppointmentPage() {
   const { expertID: specialistId } = useParams();
   const navigate = useNavigate();
@@ -65,10 +75,45 @@ export function AppointmentPage() {
 
   // Booking State
   const [bookingDate, setBookingDate] = useState(dayjs());
-  const [bookingTime, setBookingTime] = useState(
-    dayjs().add(1, "hour").startOf("hour"),
-  );
+  const [bookingTime, setBookingTime] = useState(null);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+
+  // Compute available time range for the selected date
+  const availableTimeRange = useMemo(() => {
+    if (!specialist?.schedule?.weekly || !bookingDate) return null;
+    const dayKey = dayKeyMap[bookingDate.day()];
+    const slot = specialist.schedule.weekly[dayKey];
+
+    if (!slot || !slot.active) return null;
+
+    const [startH, startM] = slot.start.split(":").map(Number);
+    const [endH, endM] = slot.end.split(":").map(Number);
+
+    // Create dayjs objects for min and max time on the selected booking date
+    const minTime = bookingDate.hour(startH).minute(startM);
+    const maxTime = bookingDate.hour(endH).minute(endM);
+
+    return { minTime, maxTime };
+  }, [bookingDate, specialist]);
+
+  // Set initial time when date changes or when drawing opens if not set
+  useEffect(() => {
+    if (
+      availableTimeRange &&
+      (!bookingTime || !bookingTime.isSame(bookingDate, "day"))
+    ) {
+      // Default to start time if current time is invalid for the new date
+      setBookingTime(availableTimeRange.minTime);
+    }
+  }, [availableTimeRange, bookingDate]);
+
+  const shouldDisableDate = (date) => {
+    if (!specialist?.schedule?.weekly) return false;
+    const dayKey = dayKeyMap[date.day()];
+    const slot = specialist.schedule.weekly[dayKey];
+    // Disable if no slot configuration or not active
+    return !slot || !slot.active;
+  };
 
   useEffect(() => {
     if (!user?.birthday) {
@@ -110,7 +155,7 @@ export function AppointmentPage() {
         user_id: user.id,
         specialist_id: specialistId,
         appointment_date: bookingDate.format("YYYY-MM-DD"),
-        appointment_time: bookingTime.format("HH:mm"),
+        appointment_time: bookingTime ? bookingTime.format("HH:mm") : "",
       };
 
       await api.post("/api/appointment", submitData);
@@ -522,6 +567,7 @@ export function AppointmentPage() {
                 value={bookingDate}
                 onChange={(newValue) => setBookingDate(newValue)}
                 disablePast
+                shouldDisableDate={shouldDisableDate}
                 views={["year", "month", "day"]}
                 sx={{ width: "100%" }}
               />
@@ -540,6 +586,8 @@ export function AppointmentPage() {
               minutesStep={30}
               ampm={false}
               sx={{ width: "100%", mb: 4 }}
+              minTime={availableTimeRange?.minTime}
+              maxTime={availableTimeRange?.maxTime}
               slotProps={{
                 textField: {
                   fullWidth: true,

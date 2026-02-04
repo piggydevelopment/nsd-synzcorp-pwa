@@ -124,14 +124,16 @@ const AppointmentCard = React.memo(({ booking, user, navigate }) => {
   );
   const now = new Date();
 
-  // Overdue check: if current time > appointment time
-  // Note: You might want a buffer (e.g. 1 hour after) or strictly after start time.
-  // "เลยกำหนด" usually means missed the start time or missed the whole slot.
-  // Strictly > start time is simplest interpretation.
+  // Overdue check for StatusChip only (still mark as overdue if past start time)
   const isOverdue = now > apptDateTime;
 
-  const isConfirmed =
-    parseInt(booking.appointment_status_id) === 2 && !isOverdue;
+  // New logic for Enter Room button:
+  // 1. Status is Confirmed (2)
+  // 2. Current time is at or after (Appointment Time - 1 hour)
+  const oneHourBefore = new Date(apptDateTime.getTime() - 60 * 60 * 1000);
+  const isConfirmedStatus = parseInt(booking.appointment_status_id) === 2;
+
+  const canEnterRoom = isConfirmedStatus && now >= oneHourBefore;
 
   const handleEnterRoom = () => {
     let data = {
@@ -223,7 +225,9 @@ const AppointmentCard = React.memo(({ booking, user, navigate }) => {
             backgroundColor: "#F8F9FA",
             borderRadius: "12px",
             p: 1.5,
-            mb: isConfirmed ? 2 : 0,
+            borderRadius: "12px",
+            p: 1.5,
+            mb: canEnterRoom ? 2 : 0,
           }}
         >
           <Stack direction="row" spacing={1} alignItems="center" mb={1}>
@@ -247,7 +251,7 @@ const AppointmentCard = React.memo(({ booking, user, navigate }) => {
         </Box>
 
         {/* Action Button */}
-        {isConfirmed && (
+        {canEnterRoom && (
           <Button
             fullWidth
             variant="contained"

@@ -230,17 +230,18 @@ export function MeetPage() {
                 >
                   เรากำลังจะพาคุณไปยังหน้าห้องสนทนา... <br />
                   หากหน้าต่างไม่ปรากฏขึ้น{" "}
-                  <span
+                  <a
+                    href={meetingUrl}
+                    target="_blank"
+                    rel="noreferrer"
                     style={{
                       color: "#461E99",
                       textDecoration: "underline",
-                      cursor: "pointer",
                       fontWeight: "bold",
                     }}
-                    onClick={() => window.open(meetingUrl, "_blank")}
                   >
                     คลิกที่นี่เพื่อเปิดหน้าต่างใหม่
-                  </span>
+                  </a>
                 </Typography>
 
                 <Typography

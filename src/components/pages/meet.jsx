@@ -21,7 +21,13 @@ import dayjs from "dayjs";
 export function MeetPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { room, consult, consultProfile, meeting_room_url, second_meeting_room_url } = location.state || {}; // Extract passed state
+  const {
+    room,
+    consult,
+    consultProfile,
+    meeting_room_url,
+    second_meeting_room_url,
+  } = location.state || {}; // Extract passed state
 
   const [hasJoined, setHasJoined] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -209,6 +215,34 @@ export function MeetPage() {
                 >
                   กำลังดำเนินการสนทนา...
                 </Typography>
+
+                {/* Fallback for popup blocker */}
+                <Typography
+                  className="NotoSansThai"
+                  sx={{
+                    color: "#555",
+                    fontSize: "15px",
+                    mb: 2,
+                    bgcolor: "#F0F0F0",
+                    p: 2,
+                    borderRadius: 2,
+                  }}
+                >
+                  เรากำลังจะพาคุณไปยังหน้าห้องสนทนา... <br />
+                  หากหน้าต่างไม่ปรากฏขึ้น{" "}
+                  <span
+                    style={{
+                      color: "#461E99",
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                    }}
+                    onClick={() => window.open(meetingUrl, "_blank")}
+                  >
+                    คลิกที่นี่เพื่อเปิดหน้าต่างใหม่
+                  </span>
+                </Typography>
+
                 <Typography
                   className="NotoSansThai"
                   sx={{ color: "#888", fontSize: "14px", mb: 4 }}
@@ -242,19 +276,6 @@ export function MeetPage() {
                   }}
                 >
                   สิ้นสุดการสนทนา
-                </Button>
-
-                <Button
-                  onClick={() => window.open(meetingUrl, "_blank")}
-                  sx={{
-                    mt: 2,
-                    textDecoration: "underline",
-                    fontSize: "12px",
-                    color: "#999",
-                  }}
-                  className="NotoSansThai"
-                >
-                  เปิดหน้าต่างประชุมอีกครั้ง
                 </Button>
               </Box>
             )}

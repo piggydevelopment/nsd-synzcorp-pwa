@@ -23,7 +23,6 @@ import { useNavigate } from "react-router-dom";
 import { ReactSession } from "react-client-session";
 import Loading from "../parts/loading";
 import api from "../../utils/api";
-import Chat from "./chat";
 
 // Helper components
 const TabPanel = (props) => {
@@ -379,7 +378,6 @@ export function HistoryPage() {
       }}
     >
       {loading && <Loading />}
-      <Chat />
 
       {/* Header */}
       <AppBar

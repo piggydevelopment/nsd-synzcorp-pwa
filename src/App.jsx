@@ -21,6 +21,10 @@ import { ConfirmPage } from "components/pages/confirm";
 import { FormPage as AssesmentForm } from "components/pages/form";
 import { ViewPage } from "components/pages/view";
 import api from "utils/api";
+import { NotificationProvider } from "./contexts/NotificationContext";
+import NotificationBanner from "./components/parts/NotificationBanner";
+import Chat from "components/pages/chat";
+import ChatBadge from "components/parts/ChatBadge";
 
 function App() {
   ReactSession.setStoreType("localStorage");
@@ -75,28 +79,33 @@ function App() {
   }, []);
 
   return (
-    <Routes>
-      /** Layout main */
-      <Route path="/" element={<Layout />}>
-        <Route path="/" element={<LoadPage />} />
-        <Route path="/otp" element={<OtpPage />} />
-        <Route path="/view" element={<ViewPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/confirm" element={<ConfirmPage />} />
-        <Route path="/appointment/:expertID" element={<AppointmentPage />} />
-        <Route path="/question" element={<QuestionPage />} />
-        <Route path="/form" element={<AssesmentForm />} />
-        <Route path="/update" element={<UpdatePage />} />
-        <Route path="/meet" element={<MeetPage />} />
-        /** *** Layout bottom */
-        <Route path="/" element={<LayoutBottomNav />}>
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/history" element={<HistoryPage />} />
-          <Route path="/account" element={<AccountPage />} />
+    <NotificationProvider>
+      <NotificationBanner />
+      <Chat />
+      <ChatBadge />
+      <Routes>
+        /** Layout main */
+        <Route path="/" element={<Layout />}>
+          <Route path="/" element={<LoadPage />} />
+          <Route path="/otp" element={<OtpPage />} />
+          <Route path="/view" element={<ViewPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/confirm" element={<ConfirmPage />} />
+          <Route path="/appointment/:expertID" element={<AppointmentPage />} />
+          <Route path="/question" element={<QuestionPage />} />
+          <Route path="/form" element={<AssesmentForm />} />
+          <Route path="/update" element={<UpdatePage />} />
+          <Route path="/meet" element={<MeetPage />} />
+          /** *** Layout bottom */
+          <Route path="/" element={<LayoutBottomNav />}>
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/account" element={<AccountPage />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </NotificationProvider>
   );
 }
 

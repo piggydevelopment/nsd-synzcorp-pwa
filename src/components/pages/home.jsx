@@ -317,7 +317,7 @@ export function HomePage() {
         specialists[type.specialist_type_id].length > 0 ? (
           <Specialist
             key={type.specialist_type_id}
-            type={type.name}
+            type={type.specialist_type_name}
             data={specialists[type.specialist_type_id]}
           />
         ) : null,

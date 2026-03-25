@@ -11,7 +11,6 @@ import { Splide, SplideSlide } from "@splidejs/react-splide";
 import Button from "@mui/material/Button";
 import "@splidejs/react-splide/css";
 import "../../assets/css/base.css";
-import { ReactSession } from "react-client-session";
 import { Link } from "react-router-dom";
 export const Specialist = (props) => {
   const [type, setType] = useState(props.type);

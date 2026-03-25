@@ -63,10 +63,6 @@
       "url": "/?type=%s"
     }
   ],
-  "related_applications": [{
-    "platform": "webapp",
-    "url": "https://corp.synzofficial.com"
-  }],
   "orientation": "portrait-primary",
   "categories": [
     "health",

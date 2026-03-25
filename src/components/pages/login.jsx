@@ -37,7 +37,7 @@ export function LoginPage() {
     const orgId = getOrganizationIdFromUrl();
 
     if (orgId === "egat" || orgId === "egat2") {
-      const pattern = /^[56]\d{5}@egat\.co\.th$/;
+      const pattern = /^[45]\d{5}@egat\.co\.th$/;
       if (pattern.test(email_value)) {
         setError(false);
         return true;

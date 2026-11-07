@@ -27,4 +27,32 @@ api.interceptors.request.use(
   },
 );
 
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (
+      error.response &&
+      (error.response.status === 403 ||
+        error.response.data?.error === "ORG_DISABLED")
+    ) {
+      localStorage.removeItem("organization_settings");
+      localStorage.removeItem("org_settings_last_update");
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("user");
+      window.dispatchEvent(
+        new CustomEvent("org-disabled", {
+          detail: {
+            message:
+              error.response.data?.message ||
+              "ระบบขององค์กรนี้ถูกระงับการใช้งานชั่วคราว",
+          },
+        }),
+      );
+    }
+    return Promise.reject(error);
+  },
+);
+
 export default api;

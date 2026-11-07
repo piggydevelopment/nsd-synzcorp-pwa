@@ -91,6 +91,20 @@ export function HomePage() {
       }
     } catch (error) {
       console.error("Failed to fetch organization settings:", error);
+      if (
+        error.response?.status === 403 ||
+        error.response?.data?.error === "ORG_DISABLED"
+      ) {
+        window.dispatchEvent(
+          new CustomEvent("org-disabled", {
+            detail: {
+              message:
+                error.response?.data?.message ||
+                "ระบบขององค์กรนี้ถูกระงับการใช้งานชั่วคราว",
+            },
+          }),
+        );
+      }
     }
     return orgSettings;
   };
